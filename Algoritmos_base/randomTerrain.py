@@ -68,17 +68,17 @@ def SetLimits(terrain,totalCount,ratio):
 
 
 if __name__=="__main__":
-    dimX, dimY = 50,50
-    blockSize = 10
+    dimX, dimY = 100,100
+    blockSize = 7
 
 
     #generation random terrain with Perlin noise
 
-    noiseGenerator = PerlinNoise(octaves = 5)
+    noiseGenerator = PerlinNoise(octaves = 10)
 
-    terreain = [[abs(noiseGenerator([x*(1/dimX),y*(1/dimX)])) for x in range(dimX)] for y in range(dimY)]
+    terreain = [[noiseGenerator([x*(1/dimX),y*(1/dimX)]) for x in range(dimX)] for y in range(dimY)]
 
-    SetLimits(terreain,dimX*dimY,[0.2,0.2,0.3,0.3])
+    SetLimits(terreain,dimX*dimY,[0.2,0.3,0.3,0.2])
 
     #pygame stuff
 
