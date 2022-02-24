@@ -8,10 +8,10 @@ WALL = "#000000"
 WATER = "#d4f1f9"
 MUD = "#70543e"
 
-count = {"sand":0,"wall":0,"water":0,"mud":0}
+count = {"water":0,"mud":0,"sand":0,"wall":0}
 limits = [0,0,0]
 
-def DrawTerrain(surfuce,reference,blockSize):
+def DrawTerrain(surface,reference,blockSize):
 
     """
     Usa a informacao que esta na matriz terreno e os limites setados pelo usuario para gerar
@@ -21,29 +21,49 @@ def DrawTerrain(surfuce,reference,blockSize):
     offset = blockSize//2
     for rowIndex,row in enumerate(reference):
         for colIndex,value in enumerate(row):
-            x = rowIndex * blockSize +offset
-            y = colIndex * blockSize +offset
+            x = colIndex * blockSize +offset
+            y = rowIndex * blockSize +offset
 
-            color = ""
+            color = "#ff0000"
 
-            if(value < limits[0]):
+            if(value == "water" ):
                 color = WATER
-                count["water"]+=1 
-            elif(value < limits[1]):
+               
+            elif(value == "mud" ):
                 color = MUD
-                count["mud"]+=1
-            elif(value < limits[2]):
+                
+            elif(value == "sand" ):
                 color = SAND
-                count["sand"]+=1
-            else:
+               
+            elif(value == "wall"):
                 color = WALL
-                count["wall"]+=1
+
+                
+            count[value]+=1
 
             image = pygame.Surface((blockSize,blockSize))
             image.fill(color)
             rect = image.get_rect(topleft = (x,y))
-            surfuce.blit(image,rect)
+            surface.blit(image,rect)
 
+def GenerateTerrain(map,dimX,dimY):
+
+    terrain = [["" for _ in range(dimX)] for _ in range(dimY)]
+
+    for rowIndex,row in enumerate(map):
+        for colIndex,value in enumerate(row):
+            x,y = colIndex,rowIndex
+
+            if(value < limits[0]):
+                terrain[y][x] = "water"
+            elif(value < limits[1]):
+                terrain[y][x] = "mud"
+            elif(value <limits[2]):
+                terrain[y][x] = "sand"
+            else:
+                terrain[y][x] = "wall"
+    
+    return terrain
 
 def SetLimits(terrain,totalCount,ratio):
     """
@@ -66,19 +86,28 @@ def SetLimits(terrain,totalCount,ratio):
         if element == 3:
             break
 
+def GetTerrain(dimX,dimY):
 
-if __name__=="__main__":
-    dimX, dimY = 100,100
-    blockSize = 7
-
+    """
+    Gera uma matrix dimX * dimY com os valores "water" "mud" "sand" e "wall"
+    """
 
     #generation random terrain with Perlin noise
 
     noiseGenerator = PerlinNoise(octaves = 10)
 
-    terreain = [[noiseGenerator([x*(1/dimX),y*(1/dimX)]) for x in range(dimX)] for y in range(dimY)]
+    terrain = [[noiseGenerator([x*(1/dimX),y*(1/dimX)]) for x in range(dimX)] for y in range(dimY)]
 
-    SetLimits(terreain,dimX*dimY,[0.2,0.3,0.3,0.2])
+    SetLimits(terrain,dimX*dimY,[0.2,0.3,0.3,0.2])
+    terrain = GenerateTerrain(terrain,dimX,dimY)
+
+    return terrain
+
+if __name__=="__main__":
+    dimX, dimY = 100,100
+    blockSize = 7
+
+    terrain = GetTerrain(dimX,dimY)
 
     #pygame stuff
 
@@ -89,7 +118,7 @@ if __name__=="__main__":
     win = pygame.display.set_mode((width,height))
     clock= pygame.time.Clock()
 
-    DrawTerrain(win,terreain,blockSize)
+    DrawTerrain(win,terrain,blockSize)
     print(count)
 
     while(True):
@@ -100,7 +129,7 @@ if __name__=="__main__":
                 sys.exit()
 
         win.fill((30,30,30))
-        DrawTerrain(win,terreain,blockSize)
+        DrawTerrain(win,terrain,blockSize)
         pygame.display.flip()
         clock.tick(60)
 
