@@ -72,7 +72,6 @@ def Neighbor(terrain,pos):
     neighbors = list(filter(lambda item: terrain[item[0]][item[1]]!="wall",neighbors))
     return neighbors
 
-
 def BreathFirstSearch(terrain,start,end):
     states = {}
 
@@ -122,12 +121,61 @@ def BreathFirstSearch(terrain,start,end):
     path.appendleft(start)
     return path
 
+def DepthFirstSearch(terrain,start,end):
+    states = {}
 
-def DrawPath(surface,path,blockSize):
+    #possible status: undiscovered, discovered, visited
+
+    for rowIndex,row in enumerate(terrain):
+        for colIndex,item in enumerate(row):
+            if item == "wall":
+                continue
+            states[f"{(rowIndex,colIndex)}"] = {"status":"undiscovered","distance":null,"previous":null}
+
+    done = False
+    current = start
+    states[str(current)]["status"] = "discovered"
+    states[str(current)]["distance"] = 0
+    stack = Stack()
+    while(not done):
+        neighbors = Neighbor(terrain,current)
+        done = True
+
+        for node in neighbors:
+            if states[str(node)]["status"]=="undiscovered":
+                done = False
+                states[str(node)]["status"]="discovered"
+                states[str(node)]["distance"]=states[str(current)]["distance"]+1
+                states[str(node)]["previous"] = current
+                stack.Push(node)
+
+        states[str(current)]["status"] = "visited"
+
+        if done and stack.Empty():
+            continue
+
+        done = False
+        current = stack.Pop()
+
+    #translates the states dict to a list of positions to the food 
+    current = end
+    path = deque()
+    while(current!=start):
+        if current == null:
+            path = deque()
+            break
+        path.appendleft(current)
+        current = states[str(current)]["previous"]
+
+    path.appendleft(start)
+    return path
+
+
+def DrawPath(surface,path,blockSize,color="red"):
 
     coords = [ ((x+1)*blockSize ,(y+1)*blockSize) for y,x in path]
 
-    pygame.draw.lines(surface,"red",False,coords)
+    pygame.draw.lines(surface,color,False,coords)
 
 def RandomPos(terrain,dimX,dimY):
     x,y = randrange(dimX),randrange(dimY)
@@ -143,13 +191,14 @@ if __name__=="__main__":
 
     terrain = GetTerrain(dimX,dimY)
 
-    foodPos= (99,99)#RandomPos(terrain,dimX,dimY)
-    startPos= (0,0)  #RandomPos(terrain,dimX,dimY)
+    foodPos= RandomPos(terrain,dimX,dimY)
+    startPos= RandomPos(terrain,dimX,dimY)
 
     terrain[startPos[0]][startPos[1]] = "start"
     terrain[foodPos[0]][foodPos[1]] = "food"
 
-    path = BreathFirstSearch(terrain,startPos,foodPos)
+    #path1 = DepthFirstSearch(terrain,startPos,foodPos)
+    path2 = BreathFirstSearch(terrain,startPos,foodPos)
 
     #pygame stuff
 
@@ -171,7 +220,9 @@ if __name__=="__main__":
 
         win.fill((30,30,30))
         DrawTerrain(win,terrain,blockSize)
-        if len(path)>1:
-            DrawPath(win,path,blockSize)
+        if len(path2)>1:
+            DrawPath(win,path2,blockSize,color="blue")
+        # if len(path1)>1:
+        #     DrawPath(win,path1,blockSize)
         pygame.display.flip()
         clock.tick(60)
