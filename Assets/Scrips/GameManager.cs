@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public Grid_ grid;
     [HideInInspector] public float size;
     public Sprite baseSquare;
+    public List<Vector2> validPos;
 
 
     private void Start()

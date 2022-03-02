@@ -71,6 +71,7 @@ public  class CreateWorldState : BaseState
         
 
         game.grid = grid;
+        game.validPos = validPos;
         game.SwitchState(game.pathFinding);
     }
 

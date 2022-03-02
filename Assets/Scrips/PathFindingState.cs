@@ -157,17 +157,11 @@ public class PathFindingState : BaseState
     }
 
     private Vector3 GetRandomValidPos(GameManager game){
-        Vector3 pos = new Vector3(Random.Range(-game.size,game.size),Random.Range(-game.size,game.size));
 
-        int x,y;
-        game.grid.GetXY(startPos,out x,out y);
-        while(game.grid.gridarray[x,y].type=="Wall"){
-            Debug.Log("invalid");
-            pos = new Vector3(Random.Range(-game.size,game.size),Random.Range(-game.size,game.size));
-            game.grid.GetXY(startPos,out x,out y);
-        }
-
-        return pos;
+        int len = game.validPos.Count;
+        Vector2 validGridPos = game.validPos[Random.Range(0,len)];
+        
+        return game.grid.GetWorldPosition((int) validGridPos.x,(int) validGridPos.y);
 
     }
 
