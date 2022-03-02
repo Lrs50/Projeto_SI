@@ -2,20 +2,25 @@ using UnityEngine;
 using System.Collections;
 
 
+//This class is responsible for creating the map based on the Perlin noise
+
 public  class CreateWorldState : BaseState
 {
-
-    public float size;
-
-    public float org;
-
-    public float squareSize;
-    public float squareCount = 50;
-    public float scale = 10;
+    //Map properties
+    private float size;
+    private float org;
+    private float squareSize;
     private float offset;
+
+    // User defined properties 
+    private float squareCount = 50;
+    private float scale = 10;
+
+    // Structure that holds all of the map entities
     private Grid_ grid;
 
     public override void EnterState(GameManager game){
+        // Setting dinamically the map properties
         
         size = Camera.main.orthographicSize;
         game.size = size;
@@ -37,6 +42,8 @@ public  class CreateWorldState : BaseState
 
     private void CreateMap(GameManager game)
     {
+        // Creates a map based on Perlin noise
+
         offset = Random.Range(0f,squareCount*1000);
         for(float y=0;y<squareCount;y++){
             for(float x=0;x<squareCount;x++){

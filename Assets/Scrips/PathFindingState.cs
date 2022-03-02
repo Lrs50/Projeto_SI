@@ -2,20 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+// with the selected pathfinding algorithm returns a path to the desired position 
+
 public class PathFindingState : BaseState
 {
 
-    
+    // Structures needed for the algorithms to work
     private Vector2 startPos;
     private Vector2 goalPos;
-    public Dictionary<Vector2,Vector2>  nodeParents = new Dictionary<Vector2,Vector2>();
+    private Dictionary<Vector2,Vector2>  nodeParents = new Dictionary<Vector2,Vector2>();
     private List<Vector2> path = new List<Vector2>();
-    private bool thereIsPath = false;
+
+    // Speed of the algorithm animation per iteration
     private float animationSpeed = 0.005f;
-    private Grid_ originalGrid;
+
 
     public override void EnterState(GameManager game){
-        originalGrid = game.grid;
+        
 
         startPos = GetRandomValidPos(game);
 
@@ -29,16 +34,10 @@ public class PathFindingState : BaseState
 
         game.StartCoroutine(BSF(game));
 
-
-        // foreach(Vector2 i in path){
-        //     game.grid.gridarray[(int)i.x,(int)i.y].spriteRenderer.color *= 0.9f;
-        // }
-
-        // game.grid.GetXY(goalPos,out x,out y);
-        // game.grid.gridarray[x,y].spriteRenderer.color = Color.yellow;
-
     }
 
+
+    //BSF implementation
     private IEnumerator BSF(GameManager game){
         Queue<Vector3> queue = new Queue<Vector3>();
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
@@ -46,7 +45,7 @@ public class PathFindingState : BaseState
 
         queue.Enqueue(startPos);
 
-        while(queue.Count!=0 && !thereIsPath){
+        while(queue.Count!=0){
             Vector3 currentNode = queue.Dequeue();
             visited.Add(currentNode);
 
@@ -56,7 +55,7 @@ public class PathFindingState : BaseState
             game.grid.GetXY(goalPos,out gx,out gy);
 
             if((cx == gx) && (cy == gy)){
-                thereIsPath = true;
+                break;
             }
 
             List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
@@ -80,6 +79,7 @@ public class PathFindingState : BaseState
     }
 
     private void ShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
+        // Displays the explored nodes to far
         foreach(Vector3 node in exploredNodes){
 
             Vector2 pos = GetMappedVec(node,game);
@@ -89,7 +89,7 @@ public class PathFindingState : BaseState
         }
     }
     private void UndoShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
-
+        // Erases from the grid the changes in color
         foreach(Vector3 node in exploredNodes){
 
             Vector2 pos = GetMappedVec(node,game);
@@ -99,6 +99,7 @@ public class PathFindingState : BaseState
         }
     }
 
+    //DSF implementation
     private IEnumerator DSF(GameManager game){
         Stack<Vector3> stack = new Stack<Vector3>();
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
@@ -107,7 +108,7 @@ public class PathFindingState : BaseState
 
         stack.Push(startPos);
 
-        while(stack.Count!=0 && !thereIsPath){
+        while(stack.Count!=0){
             Vector3 currentNode = stack.Pop();
             visited.Add(currentNode);
 
@@ -117,7 +118,7 @@ public class PathFindingState : BaseState
             game.grid.GetXY(goalPos,out gx,out gy);
 
             if((cx == gx) && (cy == gy)){
-                thereIsPath = true;
+                break;
             }
 
             List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
@@ -137,11 +138,11 @@ public class PathFindingState : BaseState
             UndoShowExploredNodes(visited,game,0.9f);
         }
 
-
-        //game.grid.resetColors();
+        ShowPath(game);
     }
 
     private Vector2 GetMappedVec(Vector3 node ,GameManager game){
+        // Returns a grid position from the world position 
         int x,y;
         game.grid.GetXY(node,out x,out y);
         return new Vector2(x,y);
@@ -155,21 +156,13 @@ public class PathFindingState : BaseState
 
     }
 
-    private void GetValidRandomPos(out int x, out int y, GameManager game){
-        x = (int)Random.Range(-game.size,game.size);
-        y = (int)Random.Range(-game.size,game.size);
-        while(game.grid.gridarray[x,y].type=="Wall"){
-            x = (int)Random.Range(-game.size,game.size);
-            y = (int)Random.Range(-game.size,game.size);
-        }
-    }
-
     private Vector3 GetRandomValidPos(GameManager game){
         Vector3 pos = new Vector3(Random.Range(-game.size,game.size),Random.Range(-game.size,game.size));
 
         int x,y;
         game.grid.GetXY(startPos,out x,out y);
         while(game.grid.gridarray[x,y].type=="Wall"){
+            Debug.Log("invalid");
             pos = new Vector3(Random.Range(-game.size,game.size),Random.Range(-game.size,game.size));
             game.grid.GetXY(startPos,out x,out y);
         }
@@ -179,6 +172,7 @@ public class PathFindingState : BaseState
     }
 
     private void ShowPath(GameManager game){
+        // shows the final path
         game.grid.resetColors();
 
         Vector2 current = GetMappedVec(goalPos,game);

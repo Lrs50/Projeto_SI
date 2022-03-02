@@ -12,11 +12,15 @@ public class GameManager : MonoBehaviour
 
     //elements that the GameManager controls
     public GameObject map;
-    public Grid_ grid;
-    public float size;
+    public Player player;
+    public GameObject foodPrefab;
 
-    //Assets
+    //General game assets or properties
+
+    [HideInInspector] public Grid_ grid;
+    [HideInInspector] public float size;
     public Sprite baseSquare;
+
 
     private void Start()
     {
@@ -29,15 +33,18 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        //FSM related stuff
         currentState.UpdateState(this);
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        //FSM related stuff
         currentState.OnCollisionEnter(this,other);        
     }
 
     public void SwitchState(BaseState state){
+        //FSM related stuff
         currentState = state;
         state.EnterState(this);
     }
