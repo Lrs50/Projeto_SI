@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     //FSM related stuff
     private BaseState currentState;
     public CreateWorldState createWorld = new CreateWorldState();
-    public PathFindingState pathFindig = new PathFindingState();
+    public PathFindingState pathFinding = new PathFindingState();
 
     //elements that the GameManager controls
     public GameObject map;

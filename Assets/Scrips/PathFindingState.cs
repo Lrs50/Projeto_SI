@@ -141,7 +141,7 @@ public class PathFindingState : BaseState
         ShowPath(game);
     }
 
-    private Vector2 GetMappedVec(Vector3 node ,GameManager game){
+    public Vector2 GetMappedVec(Vector3 node ,GameManager game){
         // Returns a grid position from the world position 
         int x,y;
         game.grid.GetXY(node,out x,out y);
