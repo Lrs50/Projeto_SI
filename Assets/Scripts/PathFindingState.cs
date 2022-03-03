@@ -17,12 +17,13 @@ public class PathFindingState : BaseState
     private float pathOpacity = 0.3f;
 
     // Speed of the algorithm animation per iteration
-    private float animationSpeed = 0.005f;
+    private float animationSpeed = 0.001f;
 
 
     public override void EnterState(GameManager game){
         
         path.Clear();
+        nodeParents.Clear();
 
         startPos = game.player.transform.position;
 

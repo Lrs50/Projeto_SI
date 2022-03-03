@@ -10,12 +10,14 @@ public class MovingState : BaseState
     private Vector3 offset;
     private float speed = 50;
     private int pathIndex;
+    Player player;
 
     public override void EnterState(GameManager game){
         playerbody = game.player.GetComponent<Rigidbody2D>();
         path = game.path;
         offset = new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
         pathIndex = path.Count-1;
+        player = game.player.GetComponent<Player>();
         
     }
 
@@ -30,13 +32,30 @@ public class MovingState : BaseState
             pathIndex --;
             foodpos = game.grid.GetWorldPosition((int)path[pathIndex].x,(int)path[pathIndex].y) + offset;
             direction = foodpos - playerpos;
-            playerbody.velocity=Vector3.zero;
         }
 
-        if(pathIndex>=0){
+        if (pathIndex >= 0){
             direction.Normalize();
-            playerbody.velocity = direction*speed;
+            if (game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].type == "Water")
+                playerbody.velocity = direction * speed * 0.4f;
+
+            else if (game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].type == "Mud")
+                playerbody.velocity = direction * speed * 0.7f;
+            else
+                playerbody.velocity = direction * speed;
+        }       
+
+        if(player.isCollidingWithFood){
+
+            player.isCollidingWithFood=false;
+            game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
+            playerbody.velocity=Vector3.zero;
+            game.grid.resetColors();
+            game.SwitchState(game.pathFinding);
+            
         }
+
+        
 
     }
 
@@ -49,8 +68,7 @@ public class MovingState : BaseState
     }
 
     public override void OnCollisionEnter(GameManager game,Collision2D other){
-        if(other.gameObject.tag=="Food"){
-            
-        }
     }
+
+
 }
