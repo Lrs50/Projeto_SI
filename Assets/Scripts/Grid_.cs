@@ -91,7 +91,6 @@ public class Grid_
         }
         if(y-1>=0 && gridarray[x,y-1].type!="Wall"){
             neighbors.Add(gridarray[x,y-1].GetPos());
-
         }
 
         return neighbors;

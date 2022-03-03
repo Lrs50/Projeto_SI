@@ -9,7 +9,7 @@ public  class CreateWorldState : BaseState
     //Map properties
     private float size;
     private float org;
-    private float squareSize;
+    public float squareSize;
     private float offset;
 
     // User defined properties 
@@ -72,6 +72,15 @@ public  class CreateWorldState : BaseState
 
         game.grid = grid;
         game.validPos = validPos;
+        
+        game.player.transform.localScale = new Vector3(squareSize*1.2f,squareSize*1.2f,1);
+        game.player.transform.position = game.GetRandomValidPos() + new Vector3(squareSize/2,squareSize/2);
+        game.food.transform.localScale = new Vector3(squareSize*1.75f,squareSize*1.75f,1) ;
+        game.food.transform.position = game.GetRandomValidPos() - new Vector3(squareSize/2,squareSize/2);
+
+        game.player.SetActive(true);
+        game.food.SetActive(true);
+
         game.SwitchState(game.pathFinding);
     }
 
@@ -109,5 +118,6 @@ public  class CreateWorldState : BaseState
         return (testNodes.Count==0);
     }
     
+    public override void FixedUpdateState(GameManager game){}
 
 }

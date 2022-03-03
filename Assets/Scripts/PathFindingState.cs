@@ -10,10 +10,11 @@ public class PathFindingState : BaseState
 {
 
     // Structures needed for the algorithms to work
-    private Vector2 startPos;
-    private Vector2 goalPos;
+    public Vector2 startPos;
+    public Vector2 goalPos;
     private Dictionary<Vector2,Vector2>  nodeParents = new Dictionary<Vector2,Vector2>();
     private List<Vector2> path = new List<Vector2>();
+    private float pathOpacity = 0.3f;
 
     // Speed of the algorithm animation per iteration
     private float animationSpeed = 0.005f;
@@ -21,24 +22,19 @@ public class PathFindingState : BaseState
 
     public override void EnterState(GameManager game){
         
+        path.Clear();
 
-        startPos = GetRandomValidPos(game);
+        startPos = game.player.transform.position;
 
-        goalPos = GetRandomValidPos(game);
+        goalPos = game.food.transform.position;
 
-        int x,y;
-        game.grid.GetXY(startPos,out x,out y);
-        game.grid.gridarray[x,y].spriteRenderer.color = Color.white;
-        game.grid.GetXY(goalPos,out x,out y);
-        game.grid.gridarray[x,y].spriteRenderer.color = Color.red;
-
-        game.StartCoroutine(BSF(game));
+        game.StartCoroutine(BFS(game));
 
     }
 
 
-    //BSF implementation
-    private IEnumerator BSF(GameManager game){
+    //BFS implementation
+    private IEnumerator BFS(GameManager game){
         Queue<Vector3> queue = new Queue<Vector3>();
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
         HashSet<Vector3> visited = new HashSet<Vector3>();
@@ -75,7 +71,12 @@ public class PathFindingState : BaseState
             UndoShowExploredNodes(visited,game,0.9f);
         }
 
-        ShowPath(game);
+        ShowPath(game,pathOpacity);
+        yield return new WaitForSeconds(0.5f);
+        game.path = path;
+        //game.grid.resetColors();
+        game.SwitchState(game.movingState);
+
     }
 
     private void ShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
@@ -99,8 +100,8 @@ public class PathFindingState : BaseState
         }
     }
 
-    //DSF implementation
-    private IEnumerator DSF(GameManager game){
+    //DFS implementation
+    private IEnumerator DFS(GameManager game){
         Stack<Vector3> stack = new Stack<Vector3>();
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
         List<Vector3> toView = new List<Vector3>();
@@ -138,7 +139,11 @@ public class PathFindingState : BaseState
             UndoShowExploredNodes(visited,game,0.9f);
         }
 
-        ShowPath(game);
+        ShowPath(game,pathOpacity);
+        yield return new WaitForSeconds(0.5f);
+        game.path = path;
+        //game.grid.resetColors();
+        game.SwitchState(game.movingState);
     }
 
     public Vector2 GetMappedVec(Vector3 node ,GameManager game){
@@ -152,20 +157,12 @@ public class PathFindingState : BaseState
 
     }
 
+    public override void FixedUpdateState(GameManager game){}
+
     public override void OnCollisionEnter(GameManager game,Collision2D other){
-
     }
 
-    private Vector3 GetRandomValidPos(GameManager game){
-
-        int len = game.validPos.Count;
-        Vector2 validGridPos = game.validPos[Random.Range(0,len)];
-        
-        return game.grid.GetWorldPosition((int) validGridPos.x,(int) validGridPos.y);
-
-    }
-
-    private void ShowPath(GameManager game){
+    private void ShowPath(GameManager game,float opacity){
         // shows the final path
         game.grid.resetColors();
 
@@ -179,7 +176,8 @@ public class PathFindingState : BaseState
             }
         }
         foreach(Vector2 i in path){
-            game.grid.gridarray[(int)i.x,(int)i.y].spriteRenderer.color = Color.red;
+            //Alpha (0 to 1) works by: Color = (Top Color * Alpha) + (Base Color * (1 - Alpha))
+            game.grid.gridarray[(int)i.x,(int)i.y].spriteRenderer.color = game.grid.gridarray[(int)i.x,(int)i.y].originalColor*(1-opacity) + Color.red*(opacity);
         }
     }
 

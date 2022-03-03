@@ -9,11 +9,12 @@ public class GameManager : MonoBehaviour
     private BaseState currentState;
     public CreateWorldState createWorld = new CreateWorldState();
     public PathFindingState pathFinding = new PathFindingState();
+    public MovingState movingState = new MovingState();
 
     //elements that the GameManager controls
     public GameObject map;
-    public Player player;
-    public GameObject foodPrefab;
+    public GameObject player;
+    public GameObject food;
 
     //General game assets or properties
 
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public float size;
     public Sprite baseSquare;
     public List<Vector2> validPos;
+    public List<Vector2> path;
 
 
     private void Start()
@@ -38,6 +40,12 @@ public class GameManager : MonoBehaviour
         currentState.UpdateState(this);
     }
 
+    private void FixedUpdate()
+    {
+        //FSM related stuff
+        currentState.FixedUpdateState(this);
+    }
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         //FSM related stuff
@@ -50,4 +58,12 @@ public class GameManager : MonoBehaviour
         state.EnterState(this);
     }
 
+    public Vector3 GetRandomValidPos(){
+
+        int len = validPos.Count;
+        Vector2 validGridPos = validPos[Random.Range(0,len)];
+
+        return grid.GetWorldPosition((int) validGridPos.x,(int) validGridPos.y);
+
+    }
 }
