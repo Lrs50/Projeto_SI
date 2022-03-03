@@ -8,7 +8,7 @@ public  class CreateWorldState : BaseState
 {
     //Map properties
     private float size;
-    private float org;
+    private Vector3 org;
     public float squareSize;
     private float offset;
 
@@ -28,9 +28,9 @@ public  class CreateWorldState : BaseState
         size = Camera.main.orthographicSize;
         game.size = size;
         squareSize = (size*2) / squareCount;
-        org = - (size) + (squareSize/2);
+        org = new Vector3(-(size*Camera.main.aspect) + (squareSize/2),-(size) + (squareSize/2));
 
-        grid = new Grid_((int)squareCount,(int)squareCount,squareSize,new Vector3(org-squareSize/2,org-squareSize/2),game.baseSquare,game.map.transform);
+        grid = new Grid_((int)squareCount,(int)squareCount,squareSize,new Vector3(org.x-squareSize/2,org.y-squareSize/2),game.baseSquare,game.map.transform);
         
         CreateMap(game);
     }

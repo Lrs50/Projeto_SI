@@ -51,6 +51,9 @@ public class MovingState : BaseState
             game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
             playerbody.velocity=Vector3.zero;
             game.grid.resetColors();
+            game.score++;
+            game.scoreText.text = "Score: "+game.score.ToString();
+
             game.SwitchState(game.pathFinding);
             
         }

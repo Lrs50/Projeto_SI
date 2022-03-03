@@ -29,7 +29,12 @@ public class PathFindingState : BaseState
 
         goalPos = game.food.transform.position;
 
-        game.StartCoroutine(BFS(game));
+        if(game.searchChoice.text=="Largura"){
+            game.StartCoroutine(BFS(game));
+        }else if(game.searchChoice.text=="Profundidade"){
+            game.StartCoroutine(DFS(game));
+        }
+
 
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {   
@@ -15,7 +16,10 @@ public class GameManager : MonoBehaviour
     public GameObject map;
     public GameObject player;
     public GameObject food;
-
+    public Text searchChoice;
+    public Text scoreText;
+    public int score = 0;
+ 
     //General game assets or properties
 
     [HideInInspector] public Grid_ grid;
