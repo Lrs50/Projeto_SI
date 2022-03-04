@@ -18,6 +18,9 @@ public class MovingState : BaseState
         offset = new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
         pathIndex = path.Count-1;
         player = game.player.GetComponent<Player>();
+
+        game.cost = 0;
+        game.costText.text = "Cost: "+game.cost.ToString();
         
     }
 
@@ -30,8 +33,8 @@ public class MovingState : BaseState
         Vector3 direction = foodpos - playerpos;
         if(direction.magnitude < 1f){
             pathIndex --;
-            foodpos = game.grid.GetWorldPosition((int)path[pathIndex].x,(int)path[pathIndex].y) + offset;
-            direction = foodpos - playerpos;
+            game.cost += game.grid.gridarray[(int)path[pathIndex].x,(int)path[pathIndex].y].cost;
+            game.costText.text = "Cost: "+game.cost.ToString();
         }
 
         if (pathIndex >= 0){

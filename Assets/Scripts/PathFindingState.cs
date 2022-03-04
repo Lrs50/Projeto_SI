@@ -41,6 +41,7 @@ public class PathFindingState : BaseState
 
     //BFS implementation
     private IEnumerator BFS(GameManager game){
+
         Queue<Vector3> queue = new Queue<Vector3>();
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
         HashSet<Vector3> visited = new HashSet<Vector3>();
@@ -48,6 +49,13 @@ public class PathFindingState : BaseState
         queue.Enqueue(startPos);
 
         while(queue.Count!=0){
+
+            if(game.searchChoice.text!="Largura"){
+                game.grid.resetColors();
+                game.SwitchState(game.pathFinding); 
+                yield break;
+            }
+
             Vector3 currentNode = queue.Dequeue();
             visited.Add(currentNode);
 
@@ -116,6 +124,13 @@ public class PathFindingState : BaseState
         stack.Push(startPos);
 
         while(stack.Count!=0){
+
+            if(game.searchChoice.text!="Profundidade"){
+                game.grid.resetColors();
+                game.SwitchState(game.pathFinding); 
+                yield break;
+            }
+
             Vector3 currentNode = stack.Pop();
             visited.Add(currentNode);
 

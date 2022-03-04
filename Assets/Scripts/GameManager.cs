@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour
     public GameObject food;
     public Text searchChoice;
     public Text scoreText;
+    public Text costText;
     public int score = 0;
+    public int cost = 0;
  
     //General game assets or properties
 
