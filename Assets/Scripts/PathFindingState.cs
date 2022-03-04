@@ -160,10 +160,25 @@ public class PathFindingState : BaseState
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
         List<Vector3> toView = new List<Vector3>();
         HashSet<Vector3> visited = new HashSet<Vector3>();
-        int distance = 0;
+        Dictionary<Vector3,int>  costs = new Dictionary<Vector3,int>();
+        
+        //seta distancia infinita para todos os outros nodes
+        foreach(Vector2 pos in game.validPos){
+            
+            Vector3 posWorld =  game.grid.GetWorldPosition((int)pos.x, (int)pos.y);
+            costs.Add(posWorld,int.MaxValue);
+            nodeParents.Add(pos, -Vector2.one);
+
+        }
+        Vector2 a = GetMappedVec(startPos,game);
+        //Debug.Log(startPos);
+        //Debug.Log(game.grid.GetWorldPosition((int)a.x, (int)a.y));
+        costs[startPos] = 0; //setar a posicao inicial como zero :)
+        
+        
 
         Vector2 index = GetMappedVec(startPos,game);
-        priorityQueue.Add(distance,startPos);
+        priorityQueue.Add(costs[startPos],startPos);
         
 
         while(!priorityQueue.Empty()){
@@ -175,29 +190,39 @@ public class PathFindingState : BaseState
             }
 
             KeyValuePair<int,Vector3> pair = priorityQueue.Pop();
-            Vector3 currentNode = pair.Value;
+            Vector3 currentNode = pair.Value;//pair.value eh o node
             visited.Add(currentNode);
-            distance +=  pair.Key;
+            
+            // int cx,cy;
+            // game.grid.GetXY(currentNode,out cx,out cy);
+            // int gx,gy;
+            // game.grid.GetXY(goalPos,out gx,out gy);
 
-            int cx,cy;
-            game.grid.GetXY(currentNode,out cx,out cy);
-            int gx,gy;
-            game.grid.GetXY(goalPos,out gx,out gy);
-
-            if((cx == gx) && (cy == gy)){
-                break;
-            }
+            // if((cx == gx) && (cy == gy)){
+            //     break;
+            // }
 
             List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
 
             foreach(Vector3 node in nodes){
-                if(!exploredNodes.Contains(node)){
-                    exploredNodes.Add(node);
+                if(!visited.Contains(node)){
 
-                    nodeParents.Add(GetMappedVec(node,game),GetMappedVec(currentNode,game));
-
+                    
                     index = GetMappedVec(node,game);
-                    priorityQueue.Add(distance+game.grid.gridarray[(int)index.x,(int)index.y].cost,node);
+                    //Debug.Log(costs[node]);
+                    //Debug.Log(index);
+                    try{
+                        if((costs[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost) < costs[node]){
+                            costs[node]=costs[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost;
+                            nodeParents[GetMappedVec(node,game)]=GetMappedVec(currentNode,game);
+                            priorityQueue.Add(costs[node],node);
+                        }
+                    }catch{
+                            costs[node]=costs[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost;
+                            nodeParents[GetMappedVec(node,game)]=GetMappedVec(currentNode,game);
+                            priorityQueue.Add(costs[node],node);
+                    }  
+                    
                 
                 }
             }
@@ -244,6 +269,7 @@ public class PathFindingState : BaseState
         game.grid.GetXY(node,out x,out y);
         return new Vector2(x,y);
     }
+    
 
     public override void UpdateState(GameManager game){
 
