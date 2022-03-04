@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 
 
 // with the selected pathfinding algorithm returns a path to the desired position 
@@ -33,6 +33,8 @@ public class PathFindingState : BaseState
             game.StartCoroutine(BFS(game));
         }else if(game.searchChoice.text=="Profundidade"){
             game.StartCoroutine(DFS(game));
+        }else if(game.searchChoice.text=="Custo Uniforme"){
+            game.StartCoroutine(Dijkstra(game));
         }
 
 
@@ -93,29 +95,9 @@ public class PathFindingState : BaseState
 
     }
 
-    private void ShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
-        // Displays the explored nodes to far
-        foreach(Vector3 node in exploredNodes){
-
-            Vector2 pos = GetMappedVec(node,game);
-            if(game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color.a>fadeRate){
-                game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color*=fadeRate;
-            }
-        }
-    }
-    private void UndoShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
-        // Erases from the grid the changes in color
-        foreach(Vector3 node in exploredNodes){
-
-            Vector2 pos = GetMappedVec(node,game);
-            if(game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color.a>fadeRate){
-                game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color/=fadeRate;
-            }
-        }
-    }
-
     //DFS implementation
     private IEnumerator DFS(GameManager game){
+
         Stack<Vector3> stack = new Stack<Vector3>();
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
         List<Vector3> toView = new List<Vector3>();
@@ -165,6 +147,95 @@ public class PathFindingState : BaseState
         game.path = path;
         //game.grid.resetColors();
         game.SwitchState(game.movingState);
+    }
+
+    private bool avaliate(int x1,int x2){
+        return x1<x2;
+    }
+
+// Dijkstra implementation
+    private IEnumerator Dijkstra(GameManager game){
+
+        Heap<int,Vector3> priorityQueue = new Heap<int, Vector3>(avaliate);
+        HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
+        List<Vector3> toView = new List<Vector3>();
+        HashSet<Vector3> visited = new HashSet<Vector3>();
+        int distance = 0;
+
+        Vector2 index = GetMappedVec(startPos,game);
+        priorityQueue.Add(distance,startPos);
+        
+
+        while(!priorityQueue.Empty()){
+
+            if(game.searchChoice.text!="Custo Uniforme"){
+                game.grid.resetColors();
+                game.SwitchState(game.pathFinding); 
+                yield break;
+            }
+
+            KeyValuePair<int,Vector3> pair = priorityQueue.Pop();
+            Vector3 currentNode = pair.Value;
+            visited.Add(currentNode);
+            distance +=  pair.Key;
+
+            int cx,cy;
+            game.grid.GetXY(currentNode,out cx,out cy);
+            int gx,gy;
+            game.grid.GetXY(goalPos,out gx,out gy);
+
+            if((cx == gx) && (cy == gy)){
+                break;
+            }
+
+            List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
+
+            foreach(Vector3 node in nodes){
+                if(!exploredNodes.Contains(node)){
+                    exploredNodes.Add(node);
+
+                    nodeParents.Add(GetMappedVec(node,game),GetMappedVec(currentNode,game));
+
+                    index = GetMappedVec(node,game);
+                    priorityQueue.Add(distance+game.grid.gridarray[(int)index.x,(int)index.y].cost,node);
+                
+                }
+            }
+            ShowExploredNodes(visited,game,0.7f);
+            ShowExploredNodes(exploredNodes,game,0.9f);
+            yield return new WaitForSeconds(animationSpeed);
+            UndoShowExploredNodes(visited,game,0.9f);
+        }
+
+        ShowPath(game,pathOpacity);
+        yield return new WaitForSeconds(0.5f);
+        game.path = path;
+        //game.grid.resetColors();
+        game.SwitchState(game.movingState);
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
+
+    private void ShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
+        // Displays the explored nodes to far
+        foreach(Vector3 node in exploredNodes){
+
+            Vector2 pos = GetMappedVec(node,game);
+            if(game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color.a>fadeRate){
+                game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color*=fadeRate;
+            }
+        }
+    }
+    private void UndoShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
+        // Erases from the grid the changes in color
+        foreach(Vector3 node in exploredNodes){
+
+            Vector2 pos = GetMappedVec(node,game);
+            if(game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color.a>fadeRate){
+                game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color/=fadeRate;
+            }
+        }
     }
 
     public Vector2 GetMappedVec(Vector3 node ,GameManager game){
