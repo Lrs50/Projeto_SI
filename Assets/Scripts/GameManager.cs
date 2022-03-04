@@ -16,11 +16,16 @@ public class GameManager : MonoBehaviour
     public GameObject map;
     public GameObject player;
     public GameObject food;
+    public GameObject scoreBox;
+    public GameObject selectBox;
     public Text searchChoice;
     public Text scoreText;
     public Text costText;
+    public GameObject loadingText;
     public int score = 0;
     public int cost = 0;
+
+    
  
     //General game assets or properties
 
@@ -34,7 +39,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         //Assents 
-
         //FSM related stuff
         currentState = createWorld;  
         currentState.EnterState(this);

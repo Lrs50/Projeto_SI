@@ -35,8 +35,11 @@ public class PathFindingState : BaseState
             game.StartCoroutine(DFS(game));
         }else if(game.searchChoice.text=="Custo Uniforme"){
             game.StartCoroutine(Dijkstra(game));
+        }else if(game.searchChoice.text=="Gulosa"){
+            game.StartCoroutine(Greedy(game));
+        }else if(game.searchChoice.text=="A*"){
+            game.StartCoroutine(Astar(game));
         }
-
 
     }
 
@@ -153,7 +156,7 @@ public class PathFindingState : BaseState
         return x1<x2;
     }
 
-// Dijkstra implementation
+    // Dijkstra implementation
     private IEnumerator Dijkstra(GameManager game){
 
         Heap<int,Vector3> priorityQueue = new Heap<int, Vector3>(avaliate);
@@ -163,13 +166,13 @@ public class PathFindingState : BaseState
         Dictionary<Vector3,int>  costs = new Dictionary<Vector3,int>();
         
         //seta distancia infinita para todos os outros nodes
-        foreach(Vector2 pos in game.validPos){
+        // foreach(Vector2 pos in game.validPos){
             
-            Vector3 posWorld =  game.grid.GetWorldPosition((int)pos.x, (int)pos.y);
-            costs.Add(posWorld,int.MaxValue);
-            nodeParents.Add(pos, -Vector2.one);
+        //     Vector3 posWorld =  game.grid.GetWorldPosition((int)pos.x, (int)pos.y);
+        //     //costs.Add(posWorld,int.MaxValue);
+        //     nodeParents.Add(pos, -Vector2.one);
 
-        }
+        // }
         Vector2 a = GetMappedVec(startPos,game);
         //Debug.Log(startPos);
         //Debug.Log(game.grid.GetWorldPosition((int)a.x, (int)a.y));
@@ -193,14 +196,6 @@ public class PathFindingState : BaseState
             Vector3 currentNode = pair.Value;//pair.value eh o node
             visited.Add(currentNode);
             
-            // int cx,cy;
-            // game.grid.GetXY(currentNode,out cx,out cy);
-            // int gx,gy;
-            // game.grid.GetXY(goalPos,out gx,out gy);
-
-            // if((cx == gx) && (cy == gy)){
-            //     break;
-            // }
 
             List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
 
@@ -209,8 +204,6 @@ public class PathFindingState : BaseState
 
                     
                     index = GetMappedVec(node,game);
-                    //Debug.Log(costs[node]);
-                    //Debug.Log(index);
                     try{
                         if((costs[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost) < costs[node]){
                             costs[node]=costs[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost;
@@ -241,6 +234,31 @@ public class PathFindingState : BaseState
         yield return new WaitForSeconds(0.5f);
     }
 
+    // Gulosa implementação
+    private IEnumerator Greedy(GameManager game){
+        //Não implementado
+
+
+        yield return new WaitForSeconds(0.5f);
+        game.searchChoice.text="Largura";
+        game.path = path;
+        //game.grid.resetColors();
+        game.SwitchState(game.pathFinding);
+
+    }
+
+
+    // A* implementação
+    private IEnumerator Astar(GameManager game){
+        //Não implementado
+
+        yield return new WaitForSeconds(0.5f);
+        game.searchChoice.text="Largura";
+        game.path = path;
+        //game.grid.resetColors();
+        game.SwitchState(game.pathFinding);
+
+    }
 
     private void ShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
         // Displays the explored nodes to far
@@ -252,6 +270,7 @@ public class PathFindingState : BaseState
             }
         }
     }
+    
     private void UndoShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
         // Erases from the grid the changes in color
         foreach(Vector3 node in exploredNodes){

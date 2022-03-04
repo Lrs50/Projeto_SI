@@ -81,6 +81,10 @@ public  class CreateWorldState : BaseState
         game.player.SetActive(true);
         game.food.SetActive(true);
 
+
+        game.loadingText.SetActive(false);
+        game.scoreBox.SetActive(true);
+        game.selectBox.SetActive(true);
         game.SwitchState(game.pathFinding);
     }
 
