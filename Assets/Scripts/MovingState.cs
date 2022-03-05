@@ -11,6 +11,8 @@ public class MovingState : BaseState
     private float speed = 50;
     private int pathIndex;
     Player player;
+    private float originalZoom;
+    private float zoom=0.4f;
 
     public override void EnterState(GameManager game){
 
@@ -27,7 +29,9 @@ public class MovingState : BaseState
             game.SwitchState(game.pathFinding);
         }
 
-        
+        originalZoom = Camera.main.orthographicSize;
+        Camera.main.orthographicSize = originalZoom*zoom;
+
         playerbody = game.player.GetComponent<Rigidbody2D>();
         path = game.path;
         offset = new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
@@ -89,6 +93,9 @@ public class MovingState : BaseState
 
             player.isMoving = false;
             
+
+            Camera.main.orthographicSize = originalZoom;
+            Camera.main.transform.position = new Vector3(0,0,-10);
             game.SwitchState(game.pathFinding);
             
         }
@@ -98,6 +105,7 @@ public class MovingState : BaseState
     }
 
     public override void FixedUpdateState(GameManager game){
+        game.cam.transform.position = new Vector3(player.transform.position.x,player.transform.position.y,-10);
         Move(game);
     }
 

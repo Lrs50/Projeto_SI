@@ -1028,6 +1028,7 @@ MonoBehaviour:
   food: {fileID: 737076620}
   scoreBox: {fileID: 172139400}
   selectBox: {fileID: 274813029}
+  cam: {fileID: 519420028}
   searchChoice: {fileID: 1719467181}
   scoreText: {fileID: 905722018}
   costText: {fileID: 101008209}
@@ -1629,6 +1630,8 @@ MonoBehaviour:
   - {fileID: -2651642842336973948, guid: b263c5d6268301a41bdf38697a551331, type: 3}
   - {fileID: -7986259568505249676, guid: b263c5d6268301a41bdf38697a551331, type: 3}
   isMoving: 0
+  previousdirection: 0
+  direction: 0
 --- !u!1 &1425191187
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public GameObject food;
     public GameObject scoreBox;
     public GameObject selectBox;
+    public GameObject cam;
     public Text searchChoice;
     public Text scoreText;
     public Text costText;
