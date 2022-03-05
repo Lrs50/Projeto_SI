@@ -17,11 +17,10 @@ public class MovingState : BaseState
     public override void EnterState(GameManager game){
 
         game.cost = 0;
-        if(!game.zoom){
+        if(game.zoom){
             game.Zoom();
         }
-
-
+        
         if(game.path.Count==0){
             player.isCollidingWithFood=false;
             game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
@@ -46,7 +45,6 @@ public class MovingState : BaseState
         player.isMoving = true;
         
         game.costText.text = "Cost: "+game.cost.ToString();
-        game.cam.transform.position = new Vector3(player.transform.position.x,player.transform.position.y,-10);
 
         
     }

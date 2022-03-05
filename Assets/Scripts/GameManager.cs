@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     public GameObject loadingText;
     public int score = 0;
     public int cost = 0;
-    public bool zoom = true;
+    public bool zoom = false;
     
     //General game assets or properties
 
