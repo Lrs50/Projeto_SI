@@ -31,7 +31,7 @@ public class Node
             type = "Mud";
             cost = 5;
             originalColor = new Color(207f/255f,139f/255f,74f/255f);
-        }else if(val < 0.5f){
+        }else if(val < 0.7f){
             type = "Land";
             originalColor = new Color(253f/255f,228f/255f,172f/255f);
             cost = 1;

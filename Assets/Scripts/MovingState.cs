@@ -13,14 +13,31 @@ public class MovingState : BaseState
     Player player;
 
     public override void EnterState(GameManager game){
+
+        game.cost = 0;
+        
+        if(game.path.Count==0){
+            player.isCollidingWithFood=false;
+            game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
+            playerbody.velocity=Vector3.zero;
+            game.grid.resetColors();
+            game.score++;
+            game.scoreText.text = "Score: "+game.score.ToString();
+
+            game.SwitchState(game.pathFinding);
+        }
+
+        
         playerbody = game.player.GetComponent<Rigidbody2D>();
         path = game.path;
         offset = new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
         pathIndex = path.Count-1;
         player = game.player.GetComponent<Player>();
-
-        game.cost = 0;
+        player.isMoving = true;
+        
         game.costText.text = "Cost: "+game.cost.ToString();
+
+
         
     }
 
@@ -39,6 +56,19 @@ public class MovingState : BaseState
 
         if (pathIndex >= 0){
             direction.Normalize();
+            if(Mathf.RoundToInt(direction.x) == 1){
+                //direita
+                player.direction = 3;
+            }else if(Mathf.RoundToInt(direction.x) == -1){
+                // Esquerda
+                player.direction = 2;
+            }else if(Mathf.RoundToInt(direction.y) == 1){
+                //cima
+                player.direction = 1;
+            }else if(Mathf.RoundToInt(direction.y) == -1){
+                //Baixo
+                player.direction = 0;
+            }
             if (game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].type == "Water")
                 playerbody.velocity = direction * speed * 0.4f;
 
@@ -57,6 +87,8 @@ public class MovingState : BaseState
             game.score++;
             game.scoreText.text = "Score: "+game.score.ToString();
 
+            player.isMoving = false;
+            
             game.SwitchState(game.pathFinding);
             
         }

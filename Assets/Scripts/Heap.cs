@@ -30,8 +30,6 @@ public class Heap <Tkey,Tvalue>{
                 vector.AddBefore(node,nodeToAdd);
             }
         }
-    
-
     }
 
     public KeyValuePair<Tkey,Tvalue> Pop(){

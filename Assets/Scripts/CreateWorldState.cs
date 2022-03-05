@@ -13,7 +13,7 @@ public  class CreateWorldState : BaseState
     private float offset;
 
     // User defined properties 
-    private float squareCount = 50;
+    private float squareCount = 20;
     private float scale = 12;
 
     // Structure that holds all of the map entities
@@ -73,9 +73,9 @@ public  class CreateWorldState : BaseState
         game.grid = grid;
         game.validPos = validPos;
         
-        game.player.transform.localScale = new Vector3(squareSize*1.2f,squareSize*1.2f,1);
+        game.player.transform.localScale = new Vector3(squareSize*5f,squareSize*5f,1);
         game.player.transform.position = game.GetRandomValidPos() + new Vector3(squareSize/2,squareSize/2);
-        game.food.transform.localScale = new Vector3(squareSize*1.75f,squareSize*1.75f,1) ;
+        game.food.transform.localScale = new Vector3(squareSize*5f,squareSize*5f,1) ;
         game.food.transform.position = game.GetRandomValidPos() + new Vector3(squareSize/2,squareSize/2);
 
         game.player.SetActive(true);

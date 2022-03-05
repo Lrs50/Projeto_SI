@@ -161,7 +161,6 @@ public class PathFindingState : BaseState
 
         Heap<int,Vector3> priorityQueue = new Heap<int, Vector3>(avaliate);
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
-        List<Vector3> toView = new List<Vector3>();
         HashSet<Vector3> visited = new HashSet<Vector3>();
         Dictionary<Vector3,int>  costs = new Dictionary<Vector3,int>();
         
@@ -173,14 +172,13 @@ public class PathFindingState : BaseState
         //     nodeParents.Add(pos, -Vector2.one);
 
         // }
-        Vector2 a = GetMappedVec(startPos,game);
+        //Vector2 a = GetMappedVec(startPos,game);
         //Debug.Log(startPos);
         //Debug.Log(game.grid.GetWorldPosition((int)a.x, (int)a.y));
+
         costs[startPos] = 0; //setar a posicao inicial como zero :)
         
-        
-
-        Vector2 index = GetMappedVec(startPos,game);
+        Vector2 index;
         priorityQueue.Add(costs[startPos],startPos);
         
 
@@ -200,9 +198,10 @@ public class PathFindingState : BaseState
             List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
 
             foreach(Vector3 node in nodes){
-                if(!visited.Contains(node)){
-
-                    
+                if(!exploredNodes.Contains(node)){
+                    exploredNodes.Add(node);
+                }
+                if(!visited.Contains(node)){  
                     index = GetMappedVec(node,game);
                     try{
                         if((costs[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost) < costs[node]){
@@ -215,8 +214,6 @@ public class PathFindingState : BaseState
                             nodeParents[GetMappedVec(node,game)]=GetMappedVec(currentNode,game);
                             priorityQueue.Add(costs[node],node);
                     }  
-                    
-                
                 }
             }
             ShowExploredNodes(visited,game,0.7f);
