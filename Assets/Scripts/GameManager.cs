@@ -19,15 +19,17 @@ public class GameManager : MonoBehaviour
     public GameObject scoreBox;
     public GameObject selectBox;
     public GameObject cam;
+    public GameObject zoomChoice;
+    public GameObject zoomBox;
+    public Sprite[] zoomSprites;
     public Text searchChoice;
     public Text scoreText;
     public Text costText;
     public GameObject loadingText;
     public int score = 0;
     public int cost = 0;
-
+    public bool zoom = true;
     
- 
     //General game assets or properties
 
     [HideInInspector] public Grid_ grid;
@@ -76,5 +78,17 @@ public class GameManager : MonoBehaviour
 
         return grid.GetWorldPosition((int) validGridPos.x,(int) validGridPos.y);
 
+    }
+
+    public void Zoom(){
+        zoom = !zoom;
+        Image choiceOP = zoomChoice.GetComponent<Image>();
+        if(zoom){
+            Camera.main.transform.position=new Vector3(player.transform.position.x,player.transform.position.y,-10);
+            choiceOP.sprite = zoomSprites[1];
+        }else{
+            Camera.main.transform.position=new Vector3(0,0,-10);
+            choiceOP.sprite = zoomSprites[0];
+        }
     }
 }

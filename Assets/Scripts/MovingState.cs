@@ -17,7 +17,11 @@ public class MovingState : BaseState
     public override void EnterState(GameManager game){
 
         game.cost = 0;
-        
+        if(!game.zoom){
+            game.Zoom();
+        }
+
+
         if(game.path.Count==0){
             player.isCollidingWithFood=false;
             game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
@@ -29,9 +33,11 @@ public class MovingState : BaseState
             game.SwitchState(game.pathFinding);
         }
 
+        game.zoomBox.SetActive(true);
         originalZoom = Camera.main.orthographicSize;
-        Camera.main.orthographicSize = originalZoom*zoom;
-        
+        if(game.zoom){
+            Camera.main.orthographicSize = originalZoom*zoom;
+        }
         playerbody = game.player.GetComponent<Rigidbody2D>();
         path = game.path;
         offset = new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
@@ -100,6 +106,8 @@ public class MovingState : BaseState
 
             Camera.main.orthographicSize = originalZoom;
             Camera.main.transform.position = new Vector3(0,0,-10);
+
+            game.zoomBox.SetActive(false);
             game.SwitchState(game.pathFinding);
             
         }
@@ -109,9 +117,15 @@ public class MovingState : BaseState
     }
 
     public override void FixedUpdateState(GameManager game){
-        float x = Mathf.MoveTowards(game.cam.transform.position.x, player.transform.position.x, 0.6f);
-        float y = Mathf.MoveTowards(game.cam.transform.position.y, player.transform.position.y, 0.6f);
-        game.cam.transform.position = new Vector3(x,y,-10);
+
+        if(game.zoom){
+            Camera.main.orthographicSize = originalZoom*zoom;
+            float x = Mathf.MoveTowards(game.cam.transform.position.x, player.transform.position.x, 0.6f);
+            float y = Mathf.MoveTowards(game.cam.transform.position.y, player.transform.position.y, 0.6f);
+            game.cam.transform.position = new Vector3(x,y,-10);
+        }else{
+            Camera.main.orthographicSize = originalZoom;
+        }
         
         Move(game);
     }
