@@ -12,7 +12,7 @@ public class MovingState : BaseState
     private int pathIndex;
     Player player;
     private float originalZoom;
-    private float zoom=0.4f;
+    private float zoom=0.2f;
 
     public override void EnterState(GameManager game){
 
@@ -53,9 +53,11 @@ public class MovingState : BaseState
         //Debug.Log($"predicted {foodpos} real {game.food.transform.position}");
         Vector3 direction = foodpos - playerpos;
         if(direction.magnitude < 1f){
+            //game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].spriteRenderer.color = game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].originalColor;
             pathIndex --;
             game.cost += game.grid.gridarray[(int)path[pathIndex].x,(int)path[pathIndex].y].cost;
             game.costText.text = "Cost: "+game.cost.ToString();
+            
         }
 
         if (pathIndex >= 0){
@@ -80,6 +82,8 @@ public class MovingState : BaseState
                 playerbody.velocity = direction * speed * 0.7f;
             else
                 playerbody.velocity = direction * speed;
+
+           
         }       
 
         if(player.isCollidingWithFood){
