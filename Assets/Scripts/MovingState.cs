@@ -8,7 +8,7 @@ public class MovingState : BaseState
     private Rigidbody2D playerbody;
     private List<Vector2> path;
     private Vector3 offset;
-    private float speed = 50;
+    private float speed = 30;
     private int pathIndex;
     Player player;
     private float originalZoom;
@@ -31,7 +31,7 @@ public class MovingState : BaseState
 
         originalZoom = Camera.main.orthographicSize;
         Camera.main.orthographicSize = originalZoom*zoom;
-
+        
         playerbody = game.player.GetComponent<Rigidbody2D>();
         path = game.path;
         offset = new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
@@ -40,7 +40,7 @@ public class MovingState : BaseState
         player.isMoving = true;
         
         game.costText.text = "Cost: "+game.cost.ToString();
-
+        game.cam.transform.position = new Vector3(player.transform.position.x,player.transform.position.y,-10);
 
         
     }
@@ -105,7 +105,10 @@ public class MovingState : BaseState
     }
 
     public override void FixedUpdateState(GameManager game){
-        game.cam.transform.position = new Vector3(player.transform.position.x,player.transform.position.y,-10);
+        float x = Mathf.MoveTowards(game.cam.transform.position.x, player.transform.position.x, 0.6f);
+        float y = Mathf.MoveTowards(game.cam.transform.position.y, player.transform.position.y, 0.6f);
+        game.cam.transform.position = new Vector3(x,y,-10);
+        
         Move(game);
     }
 

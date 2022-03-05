@@ -34,7 +34,6 @@ public class Player : MonoBehaviour
         if(isMoving){
             
             if(direction !=previousdirection){
-                index = 0;
                 count = animationSpeed;
                 previousdirection = direction;
             }       
