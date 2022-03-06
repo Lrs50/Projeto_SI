@@ -39,6 +39,8 @@ public class PathFindingState : BaseState
             game.StartCoroutine(Greedy(game));
         }else if(game.searchChoice.text=="A*"){
             game.StartCoroutine(Astar(game));
+        }else if(game.searchChoice.text=="Genetico"){
+            game.StartCoroutine(Genetic(game));
         }
 
     }
@@ -247,6 +249,17 @@ public class PathFindingState : BaseState
 
     // A* implementação
     private IEnumerator Astar(GameManager game){
+        //Não implementado
+
+        yield return new WaitForSeconds(0.5f);
+        game.searchChoice.text="Largura";
+        game.path = path;
+        //game.grid.resetColors();
+        game.SwitchState(game.pathFinding);
+
+    }
+
+    private IEnumerator Genetic(GameManager game){
         //Não implementado
 
         yield return new WaitForSeconds(0.5f);

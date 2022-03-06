@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour
     public Text searchChoice;
     public Text scoreText;
     public Text costText;
-    public GameObject loadingText;
+    public GameObject loading;
+    public SpriteRenderer loadingAnimation;
     public int score = 0;
     public int cost = 0;
     public bool zoom = false;
@@ -57,6 +58,7 @@ public class GameManager : MonoBehaviour
     {
         //FSM related stuff
         currentState.UpdateState(this);
+        
     }
 
     private void FixedUpdate()
@@ -65,6 +67,7 @@ public class GameManager : MonoBehaviour
         currentState.FixedUpdateState(this);
         if (grid != null)
             grid.FixedUpdateGrid();
+        
     }
 
     private void OnCollisionEnter2D(Collision2D other)
