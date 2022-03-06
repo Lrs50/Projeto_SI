@@ -13,7 +13,7 @@ public  class CreateWorldState : BaseState
     private float offset;
 
     // User defined properties 
-    private float squareCount = 50;
+    private float squareCount = 55;
     private float scale = 12;
 
     // Structure that holds all of the map entities
@@ -30,7 +30,7 @@ public  class CreateWorldState : BaseState
         squareSize = (size*2) / squareCount;
         org = new Vector3(-(size*Camera.main.aspect) + (squareSize/2),-(size) + (squareSize/2));
 
-        grid = new Grid_((int)squareCount,(int)squareCount,squareSize,new Vector3(org.x-squareSize/2,org.y-squareSize/2),game.baseSquare,game.map.transform);
+        grid = new Grid_((int)squareCount,(int)squareCount,squareSize,new Vector3(org.x-squareSize/2,org.y-squareSize/2),game.baseSquare,game.map.transform, game.landSprites, game.waterSprites, game.mudSprites, game.wallSprites);
         
         CreateMap(game);
     }
@@ -50,12 +50,12 @@ public  class CreateWorldState : BaseState
         bool validMap = false;
         while(!validMap){
             validPos.Clear();
-            offset = Random.Range(0f,squareCount*1000);
+            offset = Random.Range(0f, squareCount * 1000);
             for(float y=0;y<squareCount;y++){
                 for(float x=0;x<squareCount;x++){
                     
-                    float xCoord = (x / squareCount) +offset;
-                    float yCoord = (y / squareCount) +offset;
+                    float xCoord = (x / squareCount) + offset;
+                    float yCoord = (y / squareCount) + offset;
 
                     float sample = Mathf.PerlinNoise(xCoord*scale,yCoord*scale);
 

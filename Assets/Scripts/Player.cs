@@ -6,15 +6,17 @@ public class Player : MonoBehaviour
 {
 
     public bool isCollidingWithFood = false;
-    public Sprite[] sprites;
+    public bool isOnWater = false;
     public bool isMoving = false;
     private int index;
-    private int count=0;
-    private int animationSpeed = 10;
-    private int animationOffset=4;
-    public int previousdirection=0;
-    public int direction=0;
+    private int count = 0;
+    private int animationSpeed = 10; //FPS = 50/animSpeed
+    private int animationOffset = 4;
+    private int waterOffset = 16;
+    public int previousdirection = 0;
+    public int direction = 0;
     private SpriteRenderer spriteRenderer;
+    public Sprite[] sprites;
 
 
     private void Awake()
@@ -32,18 +34,20 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         if(isMoving){
-            
-            if(direction !=previousdirection){
+
+            if(direction != previousdirection){
                 count = animationSpeed;
                 previousdirection = direction;
             }       
             count++;
             if(index>3){
-                index=0;
+                index = 0;
             }
-            if(count>animationSpeed){
-
-                spriteRenderer.sprite = sprites[(direction*animationOffset) + index];
+            if(count > animationSpeed){
+                if (!isOnWater)
+                    spriteRenderer.sprite = sprites[(direction*animationOffset) + index];
+                else
+                    spriteRenderer.sprite = sprites[(direction*animationOffset) + index + waterOffset];
             
                 count = 0;
                 index++;

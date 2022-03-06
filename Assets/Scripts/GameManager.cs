@@ -29,6 +29,12 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public int cost = 0;
     public bool zoom = false;
+
+    //Sprites for the map
+    public Sprite[] landSprites;
+    public Sprite[] waterSprites;
+    public Sprite[] mudSprites;
+    public Sprite[] wallSprites;
     
     //General game assets or properties
 
@@ -57,6 +63,8 @@ public class GameManager : MonoBehaviour
     {
         //FSM related stuff
         currentState.FixedUpdateState(this);
+        if (grid != null)
+            grid.FixedUpdateGrid();
     }
 
     private void OnCollisionEnter2D(Collision2D other)

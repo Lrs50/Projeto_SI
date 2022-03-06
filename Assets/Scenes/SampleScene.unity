@@ -738,7 +738,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &460496896
 RectTransform:
   m_ObjectHideFlags: 0
@@ -756,7 +756,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 869, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &460496897
 MonoBehaviour:
@@ -1175,6 +1175,26 @@ MonoBehaviour:
   score: 0
   cost: 0
   zoom: 1
+  landSprites:
+  - {fileID: 3567337330155713005, guid: 9d16a9334b678b24788f90acfb25ea8c, type: 3}
+  - {fileID: -3886443170549168886, guid: 9d16a9334b678b24788f90acfb25ea8c, type: 3}
+  - {fileID: 61536346357461646, guid: 9d16a9334b678b24788f90acfb25ea8c, type: 3}
+  - {fileID: 3961411198714083056, guid: 9d16a9334b678b24788f90acfb25ea8c, type: 3}
+  waterSprites:
+  - {fileID: -7271534067839290881, guid: d5367bdb7b6ee614fa0dc8e617524d74, type: 3}
+  - {fileID: -7513914574126729930, guid: d5367bdb7b6ee614fa0dc8e617524d74, type: 3}
+  - {fileID: 7058616431293862704, guid: d5367bdb7b6ee614fa0dc8e617524d74, type: 3}
+  - {fileID: 6345522118653082241, guid: d5367bdb7b6ee614fa0dc8e617524d74, type: 3}
+  mudSprites:
+  - {fileID: 6991021493712525043, guid: 979be76a8a849934eae0081db0999e36, type: 3}
+  - {fileID: 6882358288470068444, guid: 979be76a8a849934eae0081db0999e36, type: 3}
+  - {fileID: 950338107049299757, guid: 979be76a8a849934eae0081db0999e36, type: 3}
+  - {fileID: 7786625892399120229, guid: 979be76a8a849934eae0081db0999e36, type: 3}
+  wallSprites:
+  - {fileID: -4030555597215180248, guid: 6c69bdbee55629840b5b7020dbae4035, type: 3}
+  - {fileID: 824747695124697930, guid: 6c69bdbee55629840b5b7020dbae4035, type: 3}
+  - {fileID: -7235172922684757770, guid: 6c69bdbee55629840b5b7020dbae4035, type: 3}
+  - {fileID: -1862971934468605724, guid: 6c69bdbee55629840b5b7020dbae4035, type: 3}
   size: 0
   baseSquare: {fileID: 7482667652216324306, guid: 8250a0bfaad3c9f46b05fe0d366859ef, type: 3}
   validPos: []
@@ -1847,6 +1867,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCollidingWithFood: 0
+  isOnWater: 0
+  isMoving: 0
+  previousdirection: 0
+  direction: 0
   sprites:
   - {fileID: -7501778473976659587, guid: b263c5d6268301a41bdf38697a551331, type: 3}
   - {fileID: -5474501469788244867, guid: b263c5d6268301a41bdf38697a551331, type: 3}
@@ -1864,9 +1888,22 @@ MonoBehaviour:
   - {fileID: 6534569371529485915, guid: b263c5d6268301a41bdf38697a551331, type: 3}
   - {fileID: -2651642842336973948, guid: b263c5d6268301a41bdf38697a551331, type: 3}
   - {fileID: -7986259568505249676, guid: b263c5d6268301a41bdf38697a551331, type: 3}
-  isMoving: 0
-  previousdirection: 0
-  direction: 0
+  - {fileID: -1949736531638758758, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: -1444504337696284477, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: -1224603181690524842, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: -7669932670322561112, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: -1951484725530837616, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: -2225290606905817714, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 4919185371347572324, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 5925869551485036438, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 5650783555868314207, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 885039879643691272, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 9182924237110480518, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 1928214161152340199, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: -6843752820322172425, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 3594905253613790240, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: -1744365382070972471, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
+  - {fileID: 2647266888517667126, guid: 5db2c4b3f29309040a46965e16d030b3, type: 3}
 --- !u!1 &1425191187
 GameObject:
   m_ObjectHideFlags: 0

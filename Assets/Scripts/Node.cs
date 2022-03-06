@@ -4,47 +4,77 @@ using UnityEngine;
 
 public class Node
 {
-
     private GameObject gameObject;
     public SpriteRenderer spriteRenderer;
     public Color originalColor = Color.black;
 
+    private Sprite[] landSprites;
+    private Sprite[] waterSprites;
+    private Sprite[] mudSprites;
+    private Sprite[] wallSprites;
+
     public string type;
     public int cost;
+    public int animSpeed = 50; //FPS = 50/animSpeed
+    public int animCount = 0;
 
-    public  Node(Vector3 pos,float size,Sprite baseSquare,Transform parent){
+    public Node (Vector3 pos, float size, Sprite baseSquare, Transform parent, Sprite[] landSprites, Sprite[] waterSprites, Sprite[] mudSprites, Sprite[] wallSprites){
         gameObject = new GameObject("node");
         gameObject.transform.parent = parent;
         spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
 
         gameObject.transform.position = pos;
-        spriteRenderer.sprite = baseSquare;
-        gameObject.transform.localScale = new Vector3(size,size,1);
+        gameObject.transform.localScale = new Vector3(size * 5, size * 5, 1);
+
+        this.landSprites = landSprites;
+        this.waterSprites = waterSprites;
+        this.mudSprites = mudSprites;
+        this.wallSprites = wallSprites;
     } 
+
+    private int terrainRandom(){
+        float x = Random.Range(0, 100);
+        if (x < 35)
+            return 0;
+        if (x < 70)
+            return 1;
+        if (x < 85)
+            return 2;
+        else
+            return 3;
+    }
 
     public void SetType(float val){
         if (val < 0.25f){
             type = "Water";
             cost = 10;
-            originalColor = new Color(108f/255f,207f/255f,227f/255f);
+            spriteRenderer.sprite = waterSprites[Random.Range(0, 3)];
         }else if(val < 0.35f){
             type = "Mud";
+            spriteRenderer.sprite = mudSprites[terrainRandom()];
             cost = 5;
-            originalColor = new Color(207f/255f,139f/255f,74f/255f);
         }else if(val < 0.5f){
             type = "Land";
-            originalColor = new Color(253f/255f,228f/255f,172f/255f);
+            spriteRenderer.sprite = landSprites[terrainRandom()];
             cost = 1;
         }else{
             type ="Wall";
-            originalColor = new Color(33f/255f,19f/255f,13f/255f);
+            spriteRenderer.sprite = wallSprites[terrainRandom()];
             cost = int.MaxValue;
         }
-        spriteRenderer.color = originalColor;
-        
     }
 
     public Vector3 GetPos(){
         return gameObject.transform.position;
+    }
+
+    public void FixedUpdateNode(){
+        if (type == "Water"){
+            animCount++;
+            if (animCount > animSpeed){
+                animCount = 0;
+                spriteRenderer.sprite = waterSprites[Random.Range(0, 3)];
+            }
+        }
     }
 }

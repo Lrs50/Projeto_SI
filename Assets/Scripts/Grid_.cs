@@ -5,7 +5,6 @@ using UnityEngine;
 // Class that holds the map elements
 public class Grid_
 {
-
     // Grid properties
     private int width;
     private int height;
@@ -15,10 +14,15 @@ public class Grid_
     private Transform parent;
     public bool instanciated {get;private set;}
 
+    private Sprite[] landSprites;
+    private Sprite[] waterSprites;
+    private Sprite[] mudSprites;
+    private Sprite[] wallSprites;
+
     // Matrix that holds the grid elements
     public Node[,] gridarray {get; private set;}
 
-    public Grid_(int width, int height,float size,Vector3 origin,Sprite baseSquare,Transform parent){
+    public Grid_(int width, int height, float size, Vector3 origin,Sprite baseSquare,Transform parent, Sprite[] landSprites, Sprite[] waterSprites, Sprite[] mudSprites, Sprite[] wallSprites){
 
         this.origin = origin;
         this.width = width;
@@ -26,12 +30,15 @@ public class Grid_
         this.size = size;
         this.baseSquare = baseSquare;
         this.parent = parent;
+        this.landSprites = landSprites;
+        this.waterSprites = waterSprites;
+        this.mudSprites = mudSprites;
+        this.wallSprites = wallSprites;
         instanciated = false;
 
-        gridarray = new Node[width,height];
+        gridarray = new Node[width, height];
 
         GenerateDefaultGrid();
-        
     }
 
     public void GenerateDefaultGrid(){
@@ -42,7 +49,7 @@ public class Grid_
                 if(!instanciated){
                     Debug.DrawLine(GetWorldPosition(x,y),GetWorldPosition(x,y+1),Color.white,100f);
                     Debug.DrawLine(GetWorldPosition(x,y),GetWorldPosition(x+1,y),Color.white,100f);
-                    gridarray[x,y] = new Node(GetWorldPosition(x,y) + new Vector3(size/2,size/2),size,baseSquare,parent);
+                    gridarray[x,y] = new Node(GetWorldPosition(x,y) + new Vector3(size/2,size/2),size,baseSquare,parent, landSprites, waterSprites, mudSprites, wallSprites);
                 }
                 
                 gridarray[x,y].SetType(0f);
@@ -100,8 +107,14 @@ public class Grid_
         //resets the grid to it's original non empty previous state
         for(int x=0;x<gridarray.GetLength(0);x++){
             for(int y=0;y<gridarray.GetLength(1);y++){
-                gridarray[x,y].spriteRenderer.color = gridarray[x,y].originalColor;
+                gridarray[x,y].spriteRenderer.color = Color.white;
             }
+        }
+    }
+
+    public void FixedUpdateGrid(){
+        foreach (Node node in gridarray){
+            node.FixedUpdateNode();
         }
     }
 }

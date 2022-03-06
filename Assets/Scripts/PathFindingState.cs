@@ -14,7 +14,7 @@ public class PathFindingState : BaseState
     public Vector2 goalPos;
     private Dictionary<Vector2,Vector2>  nodeParents = new Dictionary<Vector2,Vector2>();
     private List<Vector2> path = new List<Vector2>();
-    private float pathOpacity = 0.3f;
+    private float pathOpacity = 0.7f;
 
     // Speed of the algorithm animation per iteration
     private float animationSpeed = 0.001f;
@@ -311,7 +311,7 @@ public class PathFindingState : BaseState
         }
         foreach(Vector2 i in path){
             //Alpha (0 to 1) works by: Color = (Top Color * Alpha) + (Base Color * (1 - Alpha))
-            game.grid.gridarray[(int)i.x,(int)i.y].spriteRenderer.color = game.grid.gridarray[(int)i.x,(int)i.y].originalColor*(1-opacity) + Color.red*(opacity);
+            game.grid.gridarray[(int)i.x,(int)i.y].spriteRenderer.color = Color.white * (1 - opacity) + Color.magenta * opacity;
         }
     }
 

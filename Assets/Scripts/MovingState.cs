@@ -8,11 +8,11 @@ public class MovingState : BaseState
     private Rigidbody2D playerbody;
     private List<Vector2> path;
     private Vector3 offset;
-    private float speed = 30;
+    private float speed = 25;
     private int pathIndex;
     Player player;
     private float originalZoom;
-    private float zoom=0.2f;
+    private float zoom = 0.2f;
 
     public override void EnterState(GameManager game){
 
@@ -70,24 +70,26 @@ public class MovingState : BaseState
                 //direita
                 player.direction = 3;
             }else if(Mathf.RoundToInt(direction.x) == -1){
-                // Esquerda
+                //esquerda
                 player.direction = 2;
             }else if(Mathf.RoundToInt(direction.y) == 1){
                 //cima
                 player.direction = 1;
             }else if(Mathf.RoundToInt(direction.y) == -1){
-                //Baixo
+                //baixo
                 player.direction = 0;
             }
-            if (game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].type == "Water")
+            
+            player.isOnWater = false;
+            if (game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].type == "Water"){
                 playerbody.velocity = direction * speed * 0.4f;
-
+                player.isOnWater = true;
+            }
             else if (game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].type == "Mud")
                 playerbody.velocity = direction * speed * 0.7f;
             else
                 playerbody.velocity = direction * speed;
 
-           
         }       
 
         if(player.isCollidingWithFood){
