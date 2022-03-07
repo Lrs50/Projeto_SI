@@ -153,8 +153,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1014590024}
   - {fileID: 1579189005}
+  - {fileID: 1014590024}
   m_Father: {fileID: 1060876514}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1340,7 +1340,7 @@ MonoBehaviour:
   zoomChoice: {fileID: 1579189004}
   zoomBox: {fileID: 6567399}
   zoomSprites:
-  - {fileID: 21300000, guid: 77270d8d49e2bc14f8e7cb00913af4f1, type: 3}
+  - {fileID: 21300000, guid: 35a02fe337b062747ae25f035f664874, type: 3}
   - {fileID: 21300000, guid: 1edf1d200b9eabb41b27f1ca174c1f5b, type: 3}
   searchChoice: {fileID: 1719467181}
   scoreText: {fileID: 905722018}
@@ -1665,7 +1665,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6567400}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -2309,7 +2309,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6567400}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -2336,8 +2336,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 77270d8d49e2bc14f8e7cb00913af4f1, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 35a02fe337b062747ae25f035f664874, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

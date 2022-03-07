@@ -236,7 +236,9 @@ public class PathFindingState : BaseState
         yield return new WaitForSeconds(0.5f);
     }
 
-        public float IEuclidianDistance(Vector2 a, Vector2 b) =>  Mathf.Sqrt(((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))); 
+    public float Heuristic(Vector2 a, Vector2 b){  
+        return Mathf.Abs(a.x - b.x) +Mathf.Abs(a.y - b.y);
+    } 
 
     // Greedy implementação
     private IEnumerator Greedy(GameManager game){
@@ -248,7 +250,7 @@ public class PathFindingState : BaseState
         Vector2 neighborMapPosition, currentMapPosition;
         
 
-        priorityQueue.Add(IEuclidianDistance((Vector2)startPos,(Vector2)goalPos),startPos);
+        priorityQueue.Add(Heuristic((Vector2)startPos,(Vector2)goalPos),startPos);
 
         while(!priorityQueue.Empty()){
 
@@ -280,7 +282,7 @@ public class PathFindingState : BaseState
                     neighborMapPosition = GetMappedVec(goalPos, game);
                     currentMapPosition = GetMappedVec(node, game);
 
-                    float neighborCost = IEuclidianDistance(currentMapPosition, neighborMapPosition);
+                    float neighborCost = Heuristic(currentMapPosition, neighborMapPosition);
                 
                     nodeParents[GetMappedVec(node, game)] = GetMappedVec(currentNode, game);
                     priorityQueue.Add(neighborCost, node);
@@ -315,7 +317,7 @@ public class PathFindingState : BaseState
         Vector2 index;
         
         costSoFar[startPos] = 0;
-        priorityQueue.Add(IEuclidianDistance((Vector2)startPos,(Vector2)goalPos),startPos);
+        priorityQueue.Add(Heuristic((Vector2)startPos,(Vector2)goalPos),startPos);
 
         while(!priorityQueue.Empty()){
 
@@ -351,12 +353,12 @@ public class PathFindingState : BaseState
                         if((costSoFar[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost) < costSoFar[node]){
                             costSoFar[node]=costSoFar[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost;
                             nodeParents[GetMappedVec(node,game)]=GetMappedVec(currentNode,game);
-                            priorityQueue.Add(costSoFar[node]+IEuclidianDistance(GetMappedVec(node,game),GetMappedVec(goalPos,game)),node);
+                            priorityQueue.Add(costSoFar[node]+Heuristic(GetMappedVec(node,game),GetMappedVec(goalPos,game)),node);
                         }
                     }catch{
                             costSoFar[node]=costSoFar[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost;
                             nodeParents[GetMappedVec(node,game)]=GetMappedVec(currentNode,game);
-                            priorityQueue.Add(costSoFar[node]+IEuclidianDistance(GetMappedVec(node,game),GetMappedVec(goalPos,game)),node);
+                            priorityQueue.Add(costSoFar[node]+Heuristic(GetMappedVec(node,game),GetMappedVec(goalPos,game)),node);
                     }  
                 }
 
