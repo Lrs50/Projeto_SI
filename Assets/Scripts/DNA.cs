@@ -14,7 +14,7 @@ public class DNA
 
     }
 
-    public DNA(DNA parent,DNA partner,float mutationRate=0.01f){
+    public DNA(DNA parent,DNA partner,float mutationRate=0.05f){
         for(int i=0;i<parent.genes.Count;i++){
             float mutationChance = Random.Range(0f,1f);
             if(mutationChance<=mutationRate){

@@ -102,6 +102,30 @@ public class Grid_
 
         return neighbors;
     }
+    public List<Vector2> GetNodeNeighbors(Vector2 pos){
+        // returns all the valid neighbors of a given node
+        int x=(int)pos.x;
+        int y=(int)pos.y;
+
+        List<Vector2> neighbors = new List<Vector2>();
+
+        if(x-1>=0 && gridarray[x-1,y].type!="Wall"){
+            neighbors.Add(new Vector2(x-1,y));
+        }
+        if(y+1<height && gridarray[x,y+1].type!="Wall"){
+            neighbors.Add(new Vector2(x,y+1));
+
+        }
+        if(x+1<width && gridarray[x+1,y].type!="Wall"){
+            neighbors.Add(new Vector2(x+1,y));
+
+        }
+        if(y-1>=0 && gridarray[x,y-1].type!="Wall"){
+            neighbors.Add(new Vector2(x,y-1));
+        }
+
+        return neighbors;
+    }
 
     public void resetColors(){
         //resets the grid to it's original non empty previous state

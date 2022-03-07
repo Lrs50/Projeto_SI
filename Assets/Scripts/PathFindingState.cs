@@ -10,8 +10,8 @@ public class PathFindingState : BaseState
 {
 
     // Structures needed for the algorithms to work
-    public Vector2 startPos;
-    public Vector2 goalPos;
+    public Vector3 startPos;
+    public Vector3 goalPos;
     private Dictionary<Vector2,Vector2>  nodeParents = new Dictionary<Vector2,Vector2>();
     private List<Vector2> path = new List<Vector2>();
     private float pathOpacity = 0.7f;
@@ -380,14 +380,135 @@ public class PathFindingState : BaseState
 
     }
 
-    private IEnumerator Genetic(GameManager game){
-        //Não implementado
 
+    private bool ReachedGoal(List<TrainingAgent> students){
+
+        foreach(TrainingAgent student in students){
+            if(student.reachedGoal){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    private bool EvaluationDone(List<TrainingAgent> students){
+
+        foreach(TrainingAgent student in students){
+            if(!student.hasFinished){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private  List<TrainingAgent> NextGen(List<TrainingAgent> students,float cutoff,int populationSize,GameManager game){
+        int survivorCut = Mathf.RoundToInt(students.Count * cutoff);
+        List<TrainingAgent> survivors = new List<TrainingAgent>();
+        List<TrainingAgent> newStudents = new List<TrainingAgent>();
+        
+
+        for(int i=0;i<survivorCut;i++){
+            int save = GetFittestIndex(students);
+            survivors.Add(students[save]);
+            students.Remove(students[save]);
+        }
+
+        while(newStudents.Count<populationSize){
+            for(int i=0;i<survivors.Count;i++){
+                newStudents.Add(new TrainingAgent(new DNA(survivors[Random.Range(0,Mathf.RoundToInt(survivors.Count*cutoff +1))].dna,survivors[i].dna),
+                GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
+                if(newStudents.Count>=populationSize){
+                    break;
+                }
+            }
+        }
+
+        return newStudents;
+    }
+
+    private int GetFittestIndex(List<TrainingAgent> students){
+        float maxFittness = float.MinValue;
+        int index =0;
+        for(int i=0;i<students.Count;i++){
+            if(students[i].Fitness()>maxFittness){
+                index = i;
+                maxFittness = students[i].Fitness();
+            }
+        }
+
+        return index;
+    }
+
+    private IEnumerator Genetic(GameManager game){
+        
+        int populationSize = (int)game.createWorld.squareCount*2;
+        float cutoff = 0.3f;
+        float pathSize=Heuristic(GetMappedVec(goalPos,game),GetMappedVec(startPos,game))*3f;
+        Debug.Log(pathSize);
+
+        List<TrainingAgent> students = new List<TrainingAgent>();
+        HashSet<Vector2> visited = new HashSet<Vector2>(); 
+
+        for(int i=0;i<populationSize;i++){
+            students.Add(new TrainingAgent(new DNA(Mathf.RoundToInt(pathSize)),GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
+        }
+
+    
+        while(!ReachedGoal(students)){
+
+            if(game.searchChoice.text != "Genetico"){
+                game.grid.resetColors();
+                game.SwitchState(game.pathFinding); 
+                yield break;
+            }
+
+            while(!EvaluationDone(students)){
+                if(game.searchChoice.text != "Genetico"){
+                    game.grid.resetColors();
+                    game.SwitchState(game.pathFinding); 
+                    yield break;
+                }
+                foreach(TrainingAgent student in students){
+                    if(!visited.Contains(student.position)){
+                        visited.Add(student.position);
+                    }
+                    student.Update();
+                } 
+                ShowExploredNodes(visited,game,0.7f);
+                yield return new WaitForSeconds(animationSpeed);
+                visited.Clear();    
+            }
+
+            if(ReachedGoal(students)){
+                int index = GetFittestIndex(students);
+                bool validFittest = false;
+                while(!validFittest){
+                    if(students[index].reachedGoal){
+                        validFittest=true;
+                    }else{
+                        students.Remove(students[index]);
+                        index = GetFittestIndex(students);
+                    }
+                }
+                path = students[index].path;
+                break;
+            }
+            game.grid.resetColors();
+            students = NextGen(students,cutoff,populationSize,game);
+
+           
+        }
+
+        ShowPath(game,pathOpacity);
         yield return new WaitForSeconds(0.5f);
-        game.searchChoice.text="Largura";
+        path.Reverse();
         game.path = path;
         //game.grid.resetColors();
-        game.SwitchState(game.pathFinding);
+        game.SwitchState(game.movingState);
+
+        yield return new WaitForSeconds(0.5f);
+
 
     }
 
@@ -398,6 +519,24 @@ public class PathFindingState : BaseState
             Vector2 pos = GetMappedVec(node,game);
             if(game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color.a>fadeRate){
                 game.grid.gridarray[(int)pos.x,(int)pos.y].spriteRenderer.color*=fadeRate;
+            }
+        }
+    }
+    private void ShowExploredNodes(HashSet<Vector2> exploredNodes,GameManager game,float fadeRate){
+        // Displays the explored nodes to far
+        foreach(Vector2 node in exploredNodes){
+
+            if(game.grid.gridarray[(int)node.x,(int)node.y].spriteRenderer.color.a>fadeRate){
+                game.grid.gridarray[(int)node.x,(int)node.y].spriteRenderer.color*=fadeRate;
+            }
+        }
+    }
+    private void UndoShowExploredNodes(HashSet<Vector2> exploredNodes,GameManager game,float fadeRate){
+        // Displays the explored nodes to far
+        foreach(Vector2 node in exploredNodes){
+
+            if(game.grid.gridarray[(int)node.x,(int)node.y].spriteRenderer.color.a>fadeRate){
+                game.grid.gridarray[(int)node.x,(int)node.y].spriteRenderer.color/=fadeRate;
             }
         }
     }

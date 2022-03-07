@@ -13,7 +13,7 @@ public  class CreateWorldState : BaseState
     private float offset;
 
     // User defined properties 
-    private float squareCount = 55;
+    public float squareCount = 55;
     private float scale = 12;
 
     // Structure that holds all of the map entities
