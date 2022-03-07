@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class DNA 
 {
-
-
     public List<int> genes = new List<int>();
 
-    public DNA(int genomeLenght = 50){
+    public DNA(int genomeLength = 50){
 
-        for(int i=0;i<genomeLenght;i++){
+        for(int i=0;i<genomeLength;i++){
             genes.Add(Random.Range(0,4));
         }
 
@@ -31,6 +29,5 @@ public class DNA
             }
         }
     } 
-
 
 }

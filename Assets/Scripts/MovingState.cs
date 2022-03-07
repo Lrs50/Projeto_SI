@@ -17,9 +17,7 @@ public class MovingState : BaseState
     public override void EnterState(GameManager game){
 
         game.cost = 0;
-        if(game.zoom){
-            game.Zoom();
-        }
+
         
         if(game.path.Count==0){
             player.isCollidingWithFood=false;
@@ -36,6 +34,7 @@ public class MovingState : BaseState
         originalZoom = Camera.main.orthographicSize;
         if(game.zoom){
             Camera.main.orthographicSize = originalZoom*zoom;
+            Camera.main.transform.position = player.transform.position;
         }
         playerbody = game.player.GetComponent<Rigidbody2D>();
         path = game.path;

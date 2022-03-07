@@ -157,6 +157,9 @@ public class PathFindingState : BaseState
     private bool avaliate(int x1,int x2){
         return x1<x2;
     }
+    private bool avaliate2(float x1,float x2){
+        return x1<x2;
+    }
 
     // Dijkstra implementation
     private IEnumerator Dijkstra(GameManager game){
@@ -233,29 +236,145 @@ public class PathFindingState : BaseState
         yield return new WaitForSeconds(0.5f);
     }
 
-    // Gulosa implementação
+        public float IEuclidianDistance(Vector2 a, Vector2 b) =>  Mathf.Sqrt(((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))); 
+
+    // Greedy implementação
     private IEnumerator Greedy(GameManager game){
-        //Não implementado
 
+        Heap<float,Vector3> priorityQueue = new Heap<float, Vector3>(avaliate2);
+        HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
+        HashSet<Vector3> visited = new HashSet<Vector3>();
+        
+        Vector2 neighborMapPosition, currentMapPosition;
+        
 
+        priorityQueue.Add(IEuclidianDistance((Vector2)startPos,(Vector2)goalPos),startPos);
+
+        while(!priorityQueue.Empty()){
+
+            if(game.searchChoice.text != "Gulosa"){
+                game.grid.resetColors();
+                game.SwitchState(game.pathFinding); 
+                yield break;
+            }
+
+            KeyValuePair<float, Vector3> pair = priorityQueue.Pop();
+            Vector3 currentNode = pair.Value;//pair.value eh o node
+            visited.Add(currentNode);
+        
+            int cx,cy;
+            game.grid.GetXY(currentNode,out cx,out cy);
+            int gx,gy;
+            game.grid.GetXY(goalPos,out gx,out gy);
+
+            if((cx == gx) && (cy == gy)){
+                break;
+            }
+
+            List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
+
+            foreach(Vector3 node in nodes){
+                
+                if(!exploredNodes.Contains(node)){
+                    exploredNodes.Add(node);
+                    neighborMapPosition = GetMappedVec(goalPos, game);
+                    currentMapPosition = GetMappedVec(node, game);
+
+                    float neighborCost = IEuclidianDistance(currentMapPosition, neighborMapPosition);
+                
+                    nodeParents[GetMappedVec(node, game)] = GetMappedVec(currentNode, game);
+                    priorityQueue.Add(neighborCost, node);
+
+                }
+
+            }
+
+            ShowExploredNodes(visited,game,0.7f);
+            ShowExploredNodes(exploredNodes,game,0.9f);
+            yield return new WaitForSeconds(animationSpeed);
+            UndoShowExploredNodes(visited,game,0.9f);
+        }
+
+        ShowPath(game,pathOpacity);
         yield return new WaitForSeconds(0.5f);
-        game.searchChoice.text="Largura";
         game.path = path;
         //game.grid.resetColors();
-        game.SwitchState(game.pathFinding);
+        game.SwitchState(game.movingState);
 
+        yield return new WaitForSeconds(0.5f);
     }
-
-
+    
     // A* implementação
     private IEnumerator Astar(GameManager game){
-        //Não implementado
 
+        Dictionary<Vector3,int>  costSoFar = new Dictionary<Vector3,int>();
+        Heap<float,Vector3> priorityQueue = new Heap<float, Vector3>(avaliate2);
+        HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
+        HashSet<Vector3> visited = new HashSet<Vector3>();
+        
+        Vector2 index;
+        
+        costSoFar[startPos] = 0;
+        priorityQueue.Add(IEuclidianDistance((Vector2)startPos,(Vector2)goalPos),startPos);
+
+        while(!priorityQueue.Empty()){
+
+            if(game.searchChoice.text != "A*"){
+                game.grid.resetColors();
+                game.SwitchState(game.pathFinding); 
+                yield break;
+            }
+
+            KeyValuePair<float, Vector3> pair = priorityQueue.Pop();
+            Vector3 currentNode = pair.Value;//pair.value eh o node
+            visited.Add(currentNode);
+        
+            int cx,cy;
+            game.grid.GetXY(currentNode,out cx,out cy);
+            int gx,gy;
+            game.grid.GetXY(goalPos,out gx,out gy);
+
+            if((cx == gx) && (cy == gy)){
+                break;
+            }
+
+            List<Vector3> nodes = game.grid.GetNodeNeighbors(currentNode);
+
+            foreach(Vector3 node in nodes){
+                if(!exploredNodes.Contains(node)){
+                    exploredNodes.Add(node);
+                }
+
+                if(!visited.Contains(node)){  
+                    index = GetMappedVec(node,game);
+                    try{
+                        if((costSoFar[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost) < costSoFar[node]){
+                            costSoFar[node]=costSoFar[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost;
+                            nodeParents[GetMappedVec(node,game)]=GetMappedVec(currentNode,game);
+                            priorityQueue.Add(costSoFar[node]+IEuclidianDistance(GetMappedVec(node,game),GetMappedVec(goalPos,game)),node);
+                        }
+                    }catch{
+                            costSoFar[node]=costSoFar[currentNode]+ game.grid.gridarray[(int)index.x,(int)index.y].cost;
+                            nodeParents[GetMappedVec(node,game)]=GetMappedVec(currentNode,game);
+                            priorityQueue.Add(costSoFar[node]+IEuclidianDistance(GetMappedVec(node,game),GetMappedVec(goalPos,game)),node);
+                    }  
+                }
+
+            }
+
+            ShowExploredNodes(visited,game,0.7f);
+            ShowExploredNodes(exploredNodes,game,0.9f);
+            yield return new WaitForSeconds(animationSpeed);
+            UndoShowExploredNodes(visited,game,0.9f);
+        }
+
+        ShowPath(game,pathOpacity);
         yield return new WaitForSeconds(0.5f);
-        game.searchChoice.text="Largura";
         game.path = path;
         //game.grid.resetColors();
-        game.SwitchState(game.pathFinding);
+        game.SwitchState(game.movingState);
+
+        yield return new WaitForSeconds(0.5f);
 
     }
 
