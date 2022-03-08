@@ -14,6 +14,7 @@ public class TrainingAgent
     public bool reachedGoal=false;
     public List<Vector2> path {get;private set;}
     public float fitness = 0;
+    public float distance = 0;
 
     public TrainingAgent(DNA newDna,Vector2 target,Vector2 startPos,GameManager game){
         dna = newDna;
@@ -49,7 +50,9 @@ public class TrainingAgent
 
     public void CalculateFitness(){
 
+        distance = game.pathFinding.Heuristic(position,target);
         float dist = Vector2.Distance(position,target);
+        
         if(dist == 0){
             fitness = 0.001f;
         }

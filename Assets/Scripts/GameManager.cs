@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public GameObject zoomBox;
     public GameObject generationBox;
     public Text generationText;
+    public Text distanceGenerationText;
     public Sprite[] zoomSprites;
     public Text searchChoice;
     public Text scoreText;

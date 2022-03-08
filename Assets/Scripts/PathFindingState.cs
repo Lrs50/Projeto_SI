@@ -403,7 +403,7 @@ public class PathFindingState : BaseState
     }
 
     private  List<TrainingAgent> NextGen(List<TrainingAgent> students,float cutoff,int populationSize,GameManager game){
-        //Metodo elitista
+        
         int survivorCut = Mathf.RoundToInt(students.Count * cutoff);
         List<TrainingAgent> roulete = new List<TrainingAgent>();
         List<TrainingAgent> newStudents = new List<TrainingAgent>();
@@ -478,6 +478,7 @@ public class PathFindingState : BaseState
     private IEnumerator Genetic(GameManager game){
         
         int generation = 0;
+        float currentBestDistance = -1;
         int populationSize = (int)game.createWorld.squareCount*2;
         float cutoff = 0.3f;
         float pathSize=Heuristic(GetMappedVec(goalPos,game),GetMappedVec(startPos,game))*3f;
@@ -516,6 +517,7 @@ public class PathFindingState : BaseState
                     }
                     student.Update();
                 } 
+
                 ShowExploredNodes(visited,game,0.7f);
                 yield return new WaitForSeconds(animationSpeed);
                 visited.Clear();    
@@ -536,14 +538,18 @@ public class PathFindingState : BaseState
                 break;
             }
             game.grid.resetColors();
-            
+            int index_ = GetFittestIndex(students);
+            currentBestDistance = students[index_].distance;
+            game.distanceGenerationText.text = "Distance +" +currentBestDistance.ToString();
             students = NextGen(students,cutoff,populationSize,game);
             generation++;
             game.generationText.text = "Generation "+generation.ToString();
 
            
         }
-
+        int index__ = GetFittestIndex(students);
+        currentBestDistance = students[index__].distance;
+        game.distanceGenerationText.text = "Distance +" +currentBestDistance.ToString();
         ShowPath(game,pathOpacity);
         yield return new WaitForSeconds(0.5f);
         path.Reverse();
