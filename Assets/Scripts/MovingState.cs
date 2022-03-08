@@ -58,6 +58,7 @@ public class MovingState : BaseState
         if(direction.magnitude < 1f){
             //game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].spriteRenderer.color = game.grid.gridarray[(int)path[pathIndex].x, (int)path[pathIndex].y].originalColor;
             pathIndex --;
+            
             game.cost += game.grid.gridarray[(int)path[pathIndex].x,(int)path[pathIndex].y].cost;
             game.costText.text = "Cost: "+game.cost.ToString();
             

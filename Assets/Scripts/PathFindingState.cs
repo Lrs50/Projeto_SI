@@ -403,37 +403,72 @@ public class PathFindingState : BaseState
     }
 
     private  List<TrainingAgent> NextGen(List<TrainingAgent> students,float cutoff,int populationSize,GameManager game){
+        //Metodo elitista
         int survivorCut = Mathf.RoundToInt(students.Count * cutoff);
-        List<TrainingAgent> survivors = new List<TrainingAgent>();
+        List<TrainingAgent> roulete = new List<TrainingAgent>();
         List<TrainingAgent> newStudents = new List<TrainingAgent>();
         
 
-        for(int i=0;i<survivorCut;i++){
-            int save = GetFittestIndex(students);
-            survivors.Add(students[save]);
-            students.Remove(students[save]);
-        }
+        //normalizing the fitness
+        float maxFittness = GetFittestValue(students);
 
-        while(newStudents.Count<populationSize){
-            for(int i=0;i<survivors.Count;i++){
-                newStudents.Add(new TrainingAgent(new DNA(survivors[Random.Range(0,Mathf.RoundToInt(survivors.Count*cutoff +1))].dna,survivors[i].dna),
-                GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
-                if(newStudents.Count>=populationSize){
-                    break;
-                }
+        foreach(TrainingAgent student in students){
+            student.fitness /= maxFittness;
+
+            int count = Mathf.RoundToInt(student.fitness*100f);
+            for(int i=0;i<count;i++){
+                roulete.Add(student);
             }
         }
 
+        for(int i=0;i<students.Count;i++){
+            newStudents.Add(new TrainingAgent(new DNA(roulete[Random.Range(0,roulete.Count)].dna,roulete[Random.Range(0,roulete.Count)].dna),
+            GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
+        }
+
+        //Pesquisar metodo da roleta
+        // for(int i=0;i<survivorCut;i++){
+        //     int save = GetFittestIndex(students);
+        //     survivors.Add(students[save]);
+        //     students.Remove(students[save]);
+        // }
+
+        // while(newStudents.Count<populationSize){
+        //     for(int i=0;i<survivors.Count;i++){
+        //         //não repetir os escolhidos 
+        //         newStudents.Add(new TrainingAgent(new DNA(survivors[Random.Range(0,Mathf.RoundToInt(survivors.Count))].dna,survivors[i].dna),
+        //         GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
+        //         if(newStudents.Count>=populationSize){
+        //             break;
+        //         }
+        //     }
+        // }
+
         return newStudents;
+    }
+
+    private float GetFittestValue(List<TrainingAgent> students){
+        float maxFittness = float.MinValue;
+        int index =0;
+        for(int i=0;i<students.Count;i++){
+            students[i].CalculateFitness();
+            if(students[i].fitness>maxFittness){
+                index = i;
+                maxFittness = students[i].fitness;
+            }
+        }
+
+        return maxFittness;
     }
 
     private int GetFittestIndex(List<TrainingAgent> students){
         float maxFittness = float.MinValue;
         int index =0;
         for(int i=0;i<students.Count;i++){
-            if(students[i].Fitness()>maxFittness){
+            students[i].CalculateFitness();
+            if(students[i].fitness>maxFittness){
                 index = i;
-                maxFittness = students[i].Fitness();
+                maxFittness = students[i].fitness;
             }
         }
 
@@ -442,13 +477,16 @@ public class PathFindingState : BaseState
 
     private IEnumerator Genetic(GameManager game){
         
+        int generation = 0;
         int populationSize = (int)game.createWorld.squareCount*2;
         float cutoff = 0.3f;
         float pathSize=Heuristic(GetMappedVec(goalPos,game),GetMappedVec(startPos,game))*3f;
-        Debug.Log(pathSize);
+        
 
         List<TrainingAgent> students = new List<TrainingAgent>();
         HashSet<Vector2> visited = new HashSet<Vector2>(); 
+
+        game.generationBox.SetActive(true);
 
         for(int i=0;i<populationSize;i++){
             students.Add(new TrainingAgent(new DNA(Mathf.RoundToInt(pathSize)),GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
@@ -459,6 +497,7 @@ public class PathFindingState : BaseState
 
             if(game.searchChoice.text != "Genetico"){
                 game.grid.resetColors();
+                game.generationBox.SetActive(false);
                 game.SwitchState(game.pathFinding); 
                 yield break;
             }
@@ -466,9 +505,11 @@ public class PathFindingState : BaseState
             while(!EvaluationDone(students)){
                 if(game.searchChoice.text != "Genetico"){
                     game.grid.resetColors();
+                    game.generationBox.SetActive(false);
                     game.SwitchState(game.pathFinding); 
                     yield break;
                 }
+
                 foreach(TrainingAgent student in students){
                     if(!visited.Contains(student.position)){
                         visited.Add(student.position);
@@ -495,7 +536,10 @@ public class PathFindingState : BaseState
                 break;
             }
             game.grid.resetColors();
+            
             students = NextGen(students,cutoff,populationSize,game);
+            generation++;
+            game.generationText.text = "Generation "+generation.ToString();
 
            
         }

@@ -13,6 +13,7 @@ public class TrainingAgent
     private GameManager game;
     public bool reachedGoal=false;
     public List<Vector2> path {get;private set;}
+    public float fitness = 0;
 
     public TrainingAgent(DNA newDna,Vector2 target,Vector2 startPos,GameManager game){
         dna = newDna;
@@ -46,20 +47,19 @@ public class TrainingAgent
         hasFinished = true;
     }
 
-    public float Fitness(){
+    public void CalculateFitness(){
 
         float dist = Vector2.Distance(position,target);
         if(dist == 0){
-            return 0.001f;
+            fitness = 0.001f;
         }
         float totalCost = 0;
 
         foreach(Vector2 pos in path){
-            //totalCost += (float)game.grid.gridarray[(int)pos.x,(int)pos.y].cost;
+            totalCost += (float)game.grid.gridarray[(int)pos.x,(int)pos.y].cost;
         }
 
-
-        return 60/(dist+ totalCost/10);
+        fitness = Mathf.Pow(10f/(dist),4) + Mathf.Pow(1f/(totalCost),2);
     }
 
 }

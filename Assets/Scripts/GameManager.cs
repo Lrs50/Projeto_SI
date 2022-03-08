@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public GameObject cam;
     public GameObject zoomChoice;
     public GameObject zoomBox;
+    public GameObject generationBox;
+    public Text generationText;
     public Sprite[] zoomSprites;
     public Text searchChoice;
     public Text scoreText;
