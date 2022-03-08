@@ -7,8 +7,8 @@ using System.Collections.Generic;
 public  class CreateWorldState : BaseState
 {
     //Map properties
-    private float size;
     private Vector3 org;
+    private float size;
     public float squareSize;
     private float offset;
 
@@ -22,6 +22,7 @@ public  class CreateWorldState : BaseState
     // List with all the valid positions
     public List<Vector2> validPos = new List<Vector2>();
 
+    //EnterState function
     public override void EnterState(GameManager game){
         // Setting dinamically the map properties
 
@@ -30,23 +31,15 @@ public  class CreateWorldState : BaseState
         squareSize = (size*2) / squareCount;
         org = new Vector3(-(size*Camera.main.aspect) + (squareSize/2),-(size) + (squareSize/2));
 
-        grid = new Grid_((int)squareCount,(int)squareCount,squareSize,new Vector3(org.x-squareSize/2,org.y-squareSize/2),game.baseSquare,game.map.transform, game.landSprites, game.waterSprites, game.mudSprites, game.wallSprites);
+        grid = new Grid_((int)squareCount,(int)squareCount,squareSize,new Vector3(org.x-squareSize/2,org.y-squareSize/2),game.map.transform, game.landSprites, game.waterSprites, game.mudSprites, game.wallSprites);
         
         CreateMap(game);
     }
 
-    public override void UpdateState(GameManager game){
 
-    }
-
-    public override void OnCollisionEnter(GameManager game,Collision2D other){
-
-    }
-
+    // Creates a map based on Perlin noise
     private void CreateMap(GameManager game)
     {
-        // Creates a map based on Perlin noise
-
         bool validMap = false;
         while(!validMap){
             validPos.Clear();
@@ -68,7 +61,6 @@ public  class CreateWorldState : BaseState
 
             validMap = validateMap(game);
         }
-        
 
         game.grid = grid;
         game.validPos = validPos;
@@ -78,9 +70,13 @@ public  class CreateWorldState : BaseState
         game.food.transform.localScale = new Vector3(squareSize*5f,squareSize*5f,1) ;
         game.food.transform.position = game.GetRandomValidPos() + new Vector3(squareSize/2,squareSize/2);
 
+        //checks if the food is exactly in the player position, this case causes a bug, this prevents it
+        while(game.pathFinding.GetMappedVec(game.food.transform.position,game)==game.pathFinding.GetMappedVec(game.player.transform.position,game)){
+            game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
+        }
+
         game.player.SetActive(true);
         game.food.SetActive(true);
-
 
         game.loading.SetActive(false);
         game.scoreBox.SetActive(true);

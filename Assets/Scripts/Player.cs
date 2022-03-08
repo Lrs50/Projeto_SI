@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public bool isCollidingWithFood = false;
     public bool isOnWater = false;
     public bool isMoving = false;
+
     private int index;
     private int count = 0;
     private int animationSpeed = 10; //FPS = 50/animSpeed
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour
     private int waterOffset = 16;
     public int previousdirection = 0;
     public int direction = 0;
+
     private SpriteRenderer spriteRenderer;
     public Sprite[] sprites;
 
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    //Checks and informs if the player has collided with food
     private void OnCollisionEnter2D(Collision2D other)
     {
         if(other.gameObject.tag=="Food"){
@@ -31,6 +34,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Animation controll
     private void FixedUpdate()
     {
         if(isMoving){

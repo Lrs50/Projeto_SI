@@ -10,7 +10,6 @@ public class Grid_
     private int height;
     private float size;
     private Vector3 origin;
-    private Sprite baseSquare;
     private Transform parent;
     public bool instanciated {get;private set;}
 
@@ -22,13 +21,13 @@ public class Grid_
     // Matrix that holds the grid elements
     public Node[,] gridarray {get; private set;}
 
-    public Grid_(int width, int height, float size, Vector3 origin,Sprite baseSquare,Transform parent, Sprite[] landSprites, Sprite[] waterSprites, Sprite[] mudSprites, Sprite[] wallSprites){
+    public Grid_(int width, int height, float size, Vector3 origin,Transform parent, Sprite[] landSprites, Sprite[] waterSprites, Sprite[] mudSprites, Sprite[] wallSprites){
 
         this.origin = origin;
         this.width = width;
         this.height = height;
         this.size = size;
-        this.baseSquare = baseSquare;
+
         this.parent = parent;
         this.landSprites = landSprites;
         this.waterSprites = waterSprites;
@@ -49,7 +48,7 @@ public class Grid_
                 if(!instanciated){
                     Debug.DrawLine(GetWorldPosition(x,y),GetWorldPosition(x,y+1),Color.white,100f);
                     Debug.DrawLine(GetWorldPosition(x,y),GetWorldPosition(x+1,y),Color.white,100f);
-                    gridarray[x,y] = new Node(GetWorldPosition(x,y) + new Vector3(size/2,size/2),size,baseSquare,parent, landSprites, waterSprites, mudSprites, wallSprites);
+                    gridarray[x,y] = new Node(GetWorldPosition(x,y) + new Vector3(size/2,size/2),size,parent, landSprites, waterSprites, mudSprites, wallSprites);
                 }
                 
                 gridarray[x,y].SetType(0f);

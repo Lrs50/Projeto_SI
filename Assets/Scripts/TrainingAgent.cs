@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class TrainingAgent 
 {
-    public float pathMultiplier;
-    private int pathIndex;
+
     public DNA dna;
-    public bool hasFinished= false;
     private Vector2 target;
     public Vector2 position {get;private set;}
     private GameManager game;
-    public bool reachedGoal=false;
     public List<Vector2> path {get;private set;}
+
+    private int pathIndex;
+    public bool hasFinished= false;
+    public bool reachedGoal=false;
     public float fitness = 0;
     public float distance = 0;
 
+    //the Training Agent contructor 
     public TrainingAgent(DNA newDna,Vector2 target,Vector2 startPos,GameManager game){
         dna = newDna;
         this.target = target;
@@ -25,7 +27,7 @@ public class TrainingAgent
         path.Add(position);
     }
 
-
+    //the Training Agent moves based on the DNA
     public  void Update()
     {
         if(!hasFinished){
@@ -41,6 +43,7 @@ public class TrainingAgent
         }
     }
 
+    //Checks if the agent has finished its dna
     private void End(){
         if(position == target){
             reachedGoal =true;
@@ -48,6 +51,7 @@ public class TrainingAgent
         hasFinished = true;
     }
 
+    //Calculates the agent fitness
     public void CalculateFitness(){
 
         distance = game.pathFinding.Heuristic(position,target);
@@ -62,6 +66,8 @@ public class TrainingAgent
             totalCost += (float)game.grid.gridarray[(int)pos.x,(int)pos.y].cost;
         }
 
+        //The smaller the distance bigger the fitness, bigger the cost smaller the fittness
+        // The distance marker is more important than the cost 
         fitness = Mathf.Pow(10f/(dist),4) + Mathf.Pow(1f/(totalCost),2);
     }
 

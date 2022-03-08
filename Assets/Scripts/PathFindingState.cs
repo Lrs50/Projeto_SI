@@ -380,7 +380,7 @@ public class PathFindingState : BaseState
 
     }
 
-
+    //Checks if any agent has reached the goal
     private bool ReachedGoal(List<TrainingAgent> students){
 
         foreach(TrainingAgent student in students){
@@ -391,6 +391,7 @@ public class PathFindingState : BaseState
 
         return false;
     }
+    //Checks if all the agents have finished to real all their genetic code
     private bool EvaluationDone(List<TrainingAgent> students){
 
         foreach(TrainingAgent student in students){
@@ -402,51 +403,36 @@ public class PathFindingState : BaseState
         return true;
     }
 
+    //Creates the next generation based on the previous generation
     private  List<TrainingAgent> NextGen(List<TrainingAgent> students,float cutoff,int populationSize,GameManager game){
         
         int survivorCut = Mathf.RoundToInt(students.Count * cutoff);
-        List<TrainingAgent> roulete = new List<TrainingAgent>();
+        List<TrainingAgent> roulette = new List<TrainingAgent>();
         List<TrainingAgent> newStudents = new List<TrainingAgent>();
         
 
         //normalizing the fitness
         float maxFittness = GetFittestValue(students);
 
+        //Creates the russian roullet 
         foreach(TrainingAgent student in students){
             student.fitness /= maxFittness;
 
             int count = Mathf.RoundToInt(student.fitness*100f);
             for(int i=0;i<count;i++){
-                roulete.Add(student);
+                roulette.Add(student);
             }
         }
 
         for(int i=0;i<students.Count;i++){
-            newStudents.Add(new TrainingAgent(new DNA(roulete[Random.Range(0,roulete.Count)].dna,roulete[Random.Range(0,roulete.Count)].dna),
+            newStudents.Add(new TrainingAgent(new DNA(roulette[Random.Range(0,roulette.Count)].dna,roulette[Random.Range(0,roulette.Count)].dna),
             GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
         }
-
-        //Pesquisar metodo da roleta
-        // for(int i=0;i<survivorCut;i++){
-        //     int save = GetFittestIndex(students);
-        //     survivors.Add(students[save]);
-        //     students.Remove(students[save]);
-        // }
-
-        // while(newStudents.Count<populationSize){
-        //     for(int i=0;i<survivors.Count;i++){
-        //         //não repetir os escolhidos 
-        //         newStudents.Add(new TrainingAgent(new DNA(survivors[Random.Range(0,Mathf.RoundToInt(survivors.Count))].dna,survivors[i].dna),
-        //         GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
-        //         if(newStudents.Count>=populationSize){
-        //             break;
-        //         }
-        //     }
-        // }
 
         return newStudents;
     }
 
+    //Returns the maximum fittness
     private float GetFittestValue(List<TrainingAgent> students){
         float maxFittness = float.MinValue;
         int index =0;
@@ -461,6 +447,7 @@ public class PathFindingState : BaseState
         return maxFittness;
     }
 
+    //Return the index of the fittest agent
     private int GetFittestIndex(List<TrainingAgent> students){
         float maxFittness = float.MinValue;
         int index =0;
@@ -475,13 +462,14 @@ public class PathFindingState : BaseState
         return index;
     }
 
+    // Genetic algorithm implementation
     private IEnumerator Genetic(GameManager game){
         
         int generation = 0;
         float currentBestDistance = -1;
-        int populationSize = (int)game.createWorld.squareCount*2;
+        int populationSize = (int)game.createWorld.squareCount*5;
         float cutoff = 0.3f;
-        float pathSize=Heuristic(GetMappedVec(goalPos,game),GetMappedVec(startPos,game))*3f;
+        float pathSize=Heuristic(GetMappedVec(goalPos,game),GetMappedVec(startPos,game))*2f;
         
 
         List<TrainingAgent> students = new List<TrainingAgent>();
@@ -517,7 +505,6 @@ public class PathFindingState : BaseState
                     }
                     student.Update();
                 } 
-
                 ShowExploredNodes(visited,game,0.7f);
                 yield return new WaitForSeconds(animationSpeed);
                 visited.Clear();    
@@ -562,6 +549,10 @@ public class PathFindingState : BaseState
 
     }
 
+
+    // All the ShowExploredNodes shows in the grid the given information, All UndoShowExploredNodes 
+    // undo those previously made changes by ShowExploredNodes
+
     private void ShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
         // Displays the explored nodes to far
         foreach(Vector3 node in exploredNodes){
@@ -589,8 +580,7 @@ public class PathFindingState : BaseState
                 game.grid.gridarray[(int)node.x,(int)node.y].spriteRenderer.color/=fadeRate;
             }
         }
-    }
-    
+    }   
     private void UndoShowExploredNodes(HashSet<Vector3> exploredNodes,GameManager game,float fadeRate){
         // Erases from the grid the changes in color
         foreach(Vector3 node in exploredNodes){
@@ -601,24 +591,17 @@ public class PathFindingState : BaseState
             }
         }
     }
-
     public Vector2 GetMappedVec(Vector3 node ,GameManager game){
         // Returns a grid position from the world position 
         int x,y;
         game.grid.GetXY(node,out x,out y);
         return new Vector2(x,y);
     }
-    
-
-    public override void UpdateState(GameManager game){
-
-    }
 
     public override void FixedUpdateState(GameManager game){}
 
-    public override void OnCollisionEnter(GameManager game,Collision2D other){
-    }
-
+    // Shows the final Path highlighted in red
+    
     private void ShowPath(GameManager game,float opacity){
         // shows the final path
         game.grid.resetColors();

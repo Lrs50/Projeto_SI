@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DNA 
-{
+{   
+    
     public List<int> genes = new List<int>();
-
+    
+    //Created a random DNA
+    // The DNA represents which neightbor of the node the agent should move to
     public DNA(int genomeLength = 50){
-
+        
         for(int i=0;i<genomeLength;i++){
             genes.Add(Random.Range(0,4));
         }
 
     }
 
-    public DNA(DNA parent,DNA partner,float mutationRate=0.01f){
-        //int midpoint = Random.Range(0,genes.Count);
+    //Creates a DNA based on the parent and partner DNAs and some mutation constant
+    public DNA(DNA parent,DNA partner,float mutationRate=0.02f){
+
         for(int i=0;i<parent.genes.Count;i++){
             float mutationChance = Random.Range(0f,1f);
             if(mutationChance<=mutationRate){
@@ -27,11 +31,7 @@ public class DNA
                 }else{
                     genes.Add(partner.genes[i]);
                 }
-                // if(i<midpoint){
-                //     genes.Add(parent.genes[i]);
-                // }else{
-                //     genes.Add(partner.genes[i]);
-                // }
+
             }
         }
     } 

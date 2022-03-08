@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
+// Basic heap class created with C# double linked list
 public class Heap <Tkey,Tvalue>{
     private Func<Tkey,Tkey,bool> avaliate;
     private LinkedList<KeyValuePair<Tkey,Tvalue>> vector = new LinkedList<KeyValuePair<Tkey, Tvalue>>();

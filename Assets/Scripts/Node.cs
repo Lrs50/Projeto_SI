@@ -2,23 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Basic class that holds the information of one position in the grid
 public class Node
 {
+
     private GameObject gameObject;
     public SpriteRenderer spriteRenderer;
-    public Color originalColor = Color.black;
 
+    //Element Sprites
     private Sprite[] landSprites;
     private Sprite[] waterSprites;
     private Sprite[] mudSprites;
     private Sprite[] wallSprites;
 
+    //Node properties
     public string type;
     public int cost;
     public int animSpeed = 50; //FPS = 50/animSpeed
     public int animCount = 0;
 
-    public Node (Vector3 pos, float size, Sprite baseSquare, Transform parent, Sprite[] landSprites, Sprite[] waterSprites, Sprite[] mudSprites, Sprite[] wallSprites){
+    public Node (Vector3 pos, float size, Transform parent, Sprite[] landSprites, Sprite[] waterSprites, Sprite[] mudSprites, Sprite[] wallSprites){
         gameObject = new GameObject("node");
         gameObject.transform.parent = parent;
         spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
@@ -32,6 +35,7 @@ public class Node
         this.wallSprites = wallSprites;
     } 
 
+    // Chooses a random terrain with custom randomness
     private int terrainRandom(){
         float x = Random.Range(0, 100);
         if (x < 35)
@@ -44,6 +48,7 @@ public class Node
             return 3;
     }
 
+    // Selects a type for the node based on the value assigned 
     public void SetType(float val){
         if (val < 0.25f){
             type = "Water";
