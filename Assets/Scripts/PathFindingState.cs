@@ -419,11 +419,13 @@ public class PathFindingState : BaseState
             student.fitness /= maxFittness;
 
             int count = Mathf.RoundToInt(student.fitness*100f);
+            count = (count==0)? 1:count;
             for(int i=0;i<count;i++){
                 roulette.Add(student);
             }
         }
 
+        
         for(int i=0;i<students.Count;i++){
             newStudents.Add(new TrainingAgent(new DNA(roulette[Random.Range(0,roulette.Count)].dna,roulette[Random.Range(0,roulette.Count)].dna),
             GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
