@@ -3,7 +3,7 @@
 
 Projeto da disciplina IF684 - Sistemas Inteligentes, tem como objetivo desenvolver um agente autônomo capaz de se localizar em um ambiente complexo e conseguir chegar em um objetivo usando algum algoritmo para gerar esse caminho. Os algoritmos implementados foram: Busca em Largura, Busca em Profundidade, Custo Uniforme (Dijkstra), Busca Gulosa, A* e Busca por Evolução de um algoritmo Genético.
 
-Todo o programa foi feito em [Unity](https://pt.wikipedia.org/wiki/Unity) e o código fonte, feito em C#, pode ser encontrado na pasta [📂Assets/Scrips](https://github.com/Lrs50/Projeto_SI/tree/main/Assets/Scripts).
+Todo o programa foi feito em [Unity](https://pt.wikipedia.org/wiki/Unity) e o código fonte, feito em C#, pode ser encontrado na pasta [📂Assets/Scripts](https://github.com/Lrs50/Projeto_SI/tree/main/Assets/Scripts).
 
 ## Como utilizar a ferramenta
 
