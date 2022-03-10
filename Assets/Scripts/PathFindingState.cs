@@ -463,7 +463,9 @@ public class PathFindingState : BaseState
         HashSet<Vector2> visited = new HashSet<Vector2>(); 
 
         game.generationBox.SetActive(true);
-
+        game.generationText.text = "Generation "+generation.ToString();
+        game.distanceGenerationText.text = "Distance +" +currentBestDistance.ToString();
+        
         for(int i=0;i<populationSize;i++){
             students.Add(new TrainingAgent(new DNA(Mathf.RoundToInt(pathSize)),GetMappedVec(goalPos,game),GetMappedVec(startPos,game),game));
         }
