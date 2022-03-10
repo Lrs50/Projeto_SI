@@ -33,23 +33,23 @@ O mapa é composto por 6 elementos diferentes 4 estruturas de terreno o player e
 
 ### Busca Por Largura
 
-![gif1](https://imgur.com/0jWLLFw.gif)
+### ![gif1](https://imgur.com/3Hbxs89.gif)
 
 ### Busca Por Profundidade 
 
-### ![gif2](https://imgur.com/pMq5puD.gif)
+### ![gif2](https://cdn.discordapp.com/attachments/623608504707579924/951337562369318953/Profundidade.gif)
 
 ### Busca  Custo Uniforme
 
-### ![gif3](https://imgur.com/romzPjv.gif)
+### ![gif3](https://imgur.com/oAOQJcC.gif)
 
 ### Busca Gulosa
 
-### ![gif4](https://imgur.com/DLBfsxn.gif)
+### ![gif4](https://imgur.com/CPHWB38.gif)
 
 ### Busca A*
 
-### ![gif5](https://imgur.com/Rs1AWkW.gif) 
+### ![gif5](https://imgur.com/s6jkQxq.gif) 
 
 ### Busca Por Algoritmo Genético
 
