@@ -33,13 +33,14 @@ public  class CreateWorldState : BaseState
 
         grid = new Grid_((int)squareCount,(int)squareCount,squareSize,new Vector3(org.x-squareSize/2,org.y-squareSize/2),game.map.transform, game.landSprites, game.waterSprites, game.mudSprites, game.wallSprites);
         
-        CreateMap(game);
+        game.StartCoroutine(CreateMap(game));
     }
 
 
     // Creates a map based on Perlin noise
-    private void CreateMap(GameManager game)
+    private IEnumerator CreateMap(GameManager game)
     {
+        game.loading.SetActive(true);
         bool validMap = false;
         while(!validMap){
             validPos.Clear();
@@ -75,12 +76,14 @@ public  class CreateWorldState : BaseState
             game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
         }
 
+        yield return new WaitForSeconds(3f);
         game.player.SetActive(true);
         game.food.SetActive(true);
 
         game.loading.SetActive(false);
         game.scoreBox.SetActive(true);
         game.selectBox.SetActive(true);
+        
         game.SwitchState(game.pathFinding);
     }
 
