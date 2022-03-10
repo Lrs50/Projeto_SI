@@ -86,6 +86,7 @@ public class PathFindingState : BaseState
                     queue.Enqueue(node);
                 }
             }
+
             ShowExploredNodes(visited,game,0.7f);
             ShowExploredNodes(exploredNodes,game,0.9f);
             yield return new WaitForSeconds(animationSpeed);
@@ -105,7 +106,6 @@ public class PathFindingState : BaseState
 
         Stack<Vector3> stack = new Stack<Vector3>();
         HashSet<Vector3> exploredNodes = new HashSet<Vector3>();
-        List<Vector3> toView = new List<Vector3>();
         HashSet<Vector3> visited = new HashSet<Vector3>();
 
         stack.Push(startPos);
@@ -169,18 +169,6 @@ public class PathFindingState : BaseState
         HashSet<Vector3> visited = new HashSet<Vector3>();
         Dictionary<Vector3,int>  costs = new Dictionary<Vector3,int>();
         
-        //seta distancia infinita para todos os outros nodes
-        // foreach(Vector2 pos in game.validPos){
-            
-        //     Vector3 posWorld =  game.grid.GetWorldPosition((int)pos.x, (int)pos.y);
-        //     //costs.Add(posWorld,int.MaxValue);
-        //     nodeParents.Add(pos, -Vector2.one);
-
-        // }
-        //Vector2 a = GetMappedVec(startPos,game);
-        //Debug.Log(startPos);
-        //Debug.Log(game.grid.GetWorldPosition((int)a.x, (int)a.y));
-
         costs[startPos] = 0; //setar a posicao inicial como zero :)
         
         Vector2 index;
@@ -404,19 +392,18 @@ public class PathFindingState : BaseState
     }
 
     //Creates the next generation based on the previous generation
-    private  List<TrainingAgent> NextGen(List<TrainingAgent> students,float cutoff,int populationSize,GameManager game){
+    private  List<TrainingAgent> NextGen(List<TrainingAgent> students,int populationSize,GameManager game){
         
-        int survivorCut = Mathf.RoundToInt(students.Count * cutoff);
         List<TrainingAgent> roulette = new List<TrainingAgent>();
         List<TrainingAgent> newStudents = new List<TrainingAgent>();
         
 
         //normalizing the fitness
-        float maxFittness = GetFittestValue(students);
+        float maxFitness = GetFittestValue(students);
 
-        //Creates the russian roullet 
+        //Creates the russian roulette 
         foreach(TrainingAgent student in students){
-            student.fitness /= maxFittness;
+            student.fitness /= maxFitness;
 
             int count = Mathf.RoundToInt(student.fitness*100f);
             count = (count==0)? 1:count;
@@ -424,7 +411,7 @@ public class PathFindingState : BaseState
                 roulette.Add(student);
             }
         }
-
+        Debug.Log(roulette.Count);
         
         for(int i=0;i<students.Count;i++){
             newStudents.Add(new TrainingAgent(new DNA(roulette[Random.Range(0,roulette.Count)].dna,roulette[Random.Range(0,roulette.Count)].dna),
@@ -470,10 +457,8 @@ public class PathFindingState : BaseState
         int generation = 0;
         float currentBestDistance = -1;
         int populationSize = (int)game.createWorld.squareCount*5;
-        float cutoff = 0.3f;
         float pathSize=Heuristic(GetMappedVec(goalPos,game),GetMappedVec(startPos,game))*2f;
         
-
         List<TrainingAgent> students = new List<TrainingAgent>();
         HashSet<Vector2> visited = new HashSet<Vector2>(); 
 
@@ -530,7 +515,7 @@ public class PathFindingState : BaseState
             int index_ = GetFittestIndex(students);
             currentBestDistance = students[index_].distance;
             game.distanceGenerationText.text = "Distance +" +currentBestDistance.ToString();
-            students = NextGen(students,cutoff,populationSize,game);
+            students = NextGen(students,populationSize,game);
             generation++;
             game.generationText.text = "Generation "+generation.ToString();
 

@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
     public Sprite[] mudSprites;
     public Sprite[] wallSprites;
     
+    //Sound to play
+    public AudioSource scoreSound; 
     //General game assets or properties
 
     [HideInInspector]public float size;
@@ -54,6 +56,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         //FSM related stuff
+        scoreSound.Pause();
         currentState = createWorld;  
         currentState.EnterState(this);
     }

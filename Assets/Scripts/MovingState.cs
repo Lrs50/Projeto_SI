@@ -58,20 +58,23 @@ public class MovingState : BaseState
         //Checks if the player has collided with the moves, otherwise move
         if(player.isCollidingWithFood){
 
-            player.isCollidingWithFood=false;
             game.food.SetActive(false);
+            player.isCollidingWithFood=false;
+            
             game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
             while(game.pathFinding.GetMappedVec(game.food.transform.position,game)==game.pathFinding.GetMappedVec(game.player.transform.position,game)){
                 game.food.transform.position = game.GetRandomValidPos() + new Vector3(game.createWorld.squareSize/2,game.createWorld.squareSize/2);
             }
+
             game.food.SetActive(true);
             playerbody.velocity=Vector3.zero;
             game.grid.resetColors();
             game.score++;
             game.scoreText.text = "Score: "+game.score.ToString();
-
-            player.isMoving = false;
+            game.scoreSound.Play();
             
+            player.isMoving = false;
+                
 
             Camera.main.orthographicSize = originalZoom;
             Camera.main.transform.position = new Vector3(0,0,-10);
@@ -82,9 +85,9 @@ public class MovingState : BaseState
         }else{
 
             //gets the foodPos and playerPos and calculates the direction vector
-            Vector3 foodpos = game.grid.GetWorldPosition((int)path[pathIndex].x,(int)path[pathIndex].y) + offset;
+            Vector3 nextPos = game.grid.GetWorldPosition((int)path[pathIndex].x,(int)path[pathIndex].y) + offset;
             Vector3 playerpos = game.player.transform.position;
-            Vector3 direction = foodpos - playerpos;
+            Vector3 direction = nextPos - playerpos;
 
             //If the vector is small enough go to the next path possition
             if(direction.magnitude < 1f){

@@ -36,7 +36,7 @@ public class TrainingAgent
             if(pathIndex >= dna.genes.Count || position == target){
                 End();
             }else{
-
+        
                 List<Vector2> neighbors = game.grid.GetNodeNeighbors(position);
                 position = neighbors[dna.genes[pathIndex]%(neighbors.Count)];
                 pathIndex++;
@@ -48,7 +48,7 @@ public class TrainingAgent
     //Checks if the agent has finished its dna
     private void End(){
         if(position == target){
-            reachedGoal =true;
+            reachedGoal = true;
         }
         hasFinished = true;
     }
@@ -100,7 +100,7 @@ public class TrainingAgent
         float Last10distMultiplier=1;
 
         if(path.Count>10){
-            Last10distMultiplier = game.pathFinding.Heuristic(path[path.Count-20],position)/10f;
+            Last10distMultiplier = game.pathFinding.Heuristic(path[path.Count-10],position)/10f;
             if(Last10distMultiplier<=0.4f){
                 Last10distMultiplier=0;
             }
